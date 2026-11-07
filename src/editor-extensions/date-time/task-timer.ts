@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	Decoration,
 	DecorationSet,
@@ -215,7 +216,7 @@ class TaskTimerWidget extends WidgetType {
 
 			// Show paused state clearly
 			if (this.timerState.status === "paused") {
-				timeSpan.setText(`⏸ ${formattedTime} (Paused) `);
+				timeSpan.setText(translateUI("⏸ {{value0}} (Paused) ", { interpolation: { value0: String(formattedTime) } }));
 			} else {
 				timeSpan.setText(`⏱ ${formattedTime} `);
 			}
@@ -256,7 +257,7 @@ class TaskTimerWidget extends WidgetType {
 
 				// Show paused state clearly
 				if (this.timerState.status === "paused") {
-					timeSpan.setText(`⏸ ${formattedTime} (Paused) `);
+					timeSpan.setText(translateUI("⏸ {{value0}} (Paused) ", { interpolation: { value0: String(formattedTime) } }));
 				} else {
 					timeSpan.setText(`⏱ ${formattedTime} `);
 				}
@@ -285,7 +286,7 @@ class TaskTimerWidget extends WidgetType {
 		} else if (!this.timerState || this.timerState.status === "idle") {
 			// Create text-style start button
 			const startSpan = this.dom.createSpan({ cls: "task-timer-start" });
-			startSpan.setText("Start Task");
+			startSpan.setText(translateUI("Start Task"));
 			startSpan.addEventListener("click", (e) => {
 				e.preventDefault();
 				e.stopPropagation();
@@ -308,7 +309,7 @@ class TaskTimerWidget extends WidgetType {
 
 			// Show paused state clearly
 			if (this.timerState.status === "paused") {
-				timeSpan.setText(`⏸ ${formattedTime} (Paused) `);
+				timeSpan.setText(translateUI("⏸ {{value0}} (Paused) ", { interpolation: { value0: String(formattedTime) } }));
 			} else {
 				timeSpan.setText(`⏱ ${formattedTime} `);
 			}

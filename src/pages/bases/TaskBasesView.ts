@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	BasesEntry,
 	BasesPropertyId,
@@ -2056,7 +2057,7 @@ export class TaskBasesView extends BasesView {
 						displayName: "Task Content",
 						type: "property",
 						key: "taskContent",
-						placeholder: "Property containing task text",
+						placeholder: translateUI("Property containing task text"),
 						default: "file.basename", // Special case: use file name as content
 					},
 					{
@@ -2064,7 +2065,7 @@ export class TaskBasesView extends BasesView {
 						type: "property",
 						key: "taskStatus",
 						filter: (prop) => !prop.startsWith("file."),
-						placeholder: "Property for completion status",
+						placeholder: translateUI("Property for completion status"),
 						default: `note.${DEFAULT_FILE_TASK_MAPPING.statusProperty}`,
 					},
 					{
@@ -2072,7 +2073,7 @@ export class TaskBasesView extends BasesView {
 						type: "property",
 						key: "taskPriority",
 						filter: (prop) => !prop.startsWith("file."),
-						placeholder: "Property for task priority",
+						placeholder: translateUI("Property for task priority"),
 						default: `note.${DEFAULT_FILE_TASK_MAPPING.priorityProperty}`,
 					},
 					{
@@ -2080,7 +2081,7 @@ export class TaskBasesView extends BasesView {
 						type: "property",
 						key: "taskProject",
 						filter: (prop) => !prop.startsWith("file."),
-						placeholder: "Property for project assignment",
+						placeholder: translateUI("Property for project assignment"),
 						default: `note.${DEFAULT_FILE_TASK_MAPPING.projectProperty}`,
 					},
 					{
@@ -2088,7 +2089,7 @@ export class TaskBasesView extends BasesView {
 						type: "property",
 						key: "taskTags",
 						filter: (prop) => !prop.startsWith("file."),
-						placeholder: "Property for task tags",
+						placeholder: translateUI("Property for task tags"),
 						default: `note.${DEFAULT_FILE_TASK_MAPPING.tagsProperty}`,
 					},
 					{
@@ -2096,7 +2097,7 @@ export class TaskBasesView extends BasesView {
 						type: "property",
 						key: "taskContext",
 						filter: (prop) => !prop.startsWith("file."),
-						placeholder: "Property for task context",
+						placeholder: translateUI("Property for task context"),
 						default: `note.${DEFAULT_FILE_TASK_MAPPING.contextProperty}`,
 					},
 				],
@@ -2110,7 +2111,7 @@ export class TaskBasesView extends BasesView {
 						type: "property",
 						key: "taskDueDate",
 						filter: (prop) => !prop.startsWith("file."),
-						placeholder: "Property for due date",
+						placeholder: translateUI("Property for due date"),
 						default: `note.${DEFAULT_FILE_TASK_MAPPING.dueDateProperty}`,
 					},
 					{
@@ -2118,7 +2119,7 @@ export class TaskBasesView extends BasesView {
 						type: "property",
 						key: "taskStartDate",
 						filter: (prop) => !prop.startsWith("file."),
-						placeholder: "Property for start date",
+						placeholder: translateUI("Property for start date"),
 						default: `note.${DEFAULT_FILE_TASK_MAPPING.startDateProperty}`,
 					},
 					{
@@ -2126,7 +2127,7 @@ export class TaskBasesView extends BasesView {
 						type: "property",
 						key: "taskCompletedDate",
 						filter: (prop) => !prop.startsWith("file."),
-						placeholder: "Property for completion date",
+						placeholder: translateUI("Property for completion date"),
 						default: `note.${DEFAULT_FILE_TASK_MAPPING.completedDateProperty}`,
 					},
 				],

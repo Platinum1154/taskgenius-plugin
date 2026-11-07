@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	App,
 	Component,
@@ -110,7 +111,7 @@ export class TagsComponent extends Component {
 		this.countEl = titleContainer.createDiv({
 			cls: "tags-count",
 		});
-		this.countEl.setText("0 tags");
+		this.countEl.setText(translateUI("0 tags"));
 	}
 
 	private createLeftColumn(parentEl: HTMLElement) {
@@ -191,7 +192,7 @@ export class TagsComponent extends Component {
 		const taskCountEl = taskHeaderEl.createDiv({
 			cls: "tags-task-count",
 		});
-		taskCountEl.setText("0 tasks");
+		taskCountEl.setText(translateUI("0 tasks"));
 
 		// Add view toggle button
 		const viewToggleBtn = taskHeaderEl.createDiv({
@@ -217,11 +218,14 @@ export class TagsComponent extends Component {
 	 */
 	public setTasks(tasks: Task[], allTasks?: Task[]) {
 		this.sourceTasks = tasks;
-		this.allTasks = allTasks && allTasks.length > 0 ? allTasks : tasks;
+		this.allTasks = allTasks ?? tasks;
 		this.allTasksMap = new Map(
 			this.allTasks.map((task) => [task.id, task]),
 		);
 		this.buildTagsIndex();
+		this.selectedTags.tags = this.selectedTags.tags.filter(tag =>
+			this.allTagsMap.has(tag) || [...this.allTagsMap.keys()].some(child => child.startsWith(`${tag}/`)),
+		);
 		this.renderTagsList();
 
 		// If tags were already selected, update the tasks
@@ -256,7 +260,7 @@ export class TagsComponent extends Component {
 		});
 
 		// Update tags count
-		this.countEl?.setText(`${this.allTagsMap.size} tags`);
+		this.countEl?.setText(translateUI("{{value0}} tags", { interpolation: { value0: String(this.allTagsMap.size) } }));
 	}
 
 	private renderTagsList() {

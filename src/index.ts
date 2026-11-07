@@ -185,8 +185,8 @@ export default class TaskProgressBarPlugin extends Plugin {
 
 	async onload() {
 		console.time("[Task Genius] onload");
-		await initializeTranslations();
 		await this.loadSettings();
+		await initializeTranslations(this.settings.language);
 
 		// Initialize version manager first
 		this.versionManager = new VersionManager(this.app, this);
@@ -1199,6 +1199,11 @@ export default class TaskProgressBarPlugin extends Plugin {
 					await leaf.view.triggerViewUpdate();
 				}
 			}
+		}
+		for (const leaf of this.app.workspace.getLeavesOfType("fluent-task-genius-view")) {
+			const view = leaf.view;
+			(view as any).layoutManager?.sidebar?.render();
+			await (view as any).dataManager?.loadTasks(false);
 		}
 	}
 

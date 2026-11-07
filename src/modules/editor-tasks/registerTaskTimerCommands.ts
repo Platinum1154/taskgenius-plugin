@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Notice } from "obsidian";
 import type TaskProgressBarPlugin from "../../index";
 import { TaskTimerManager } from "../../managers/timer-manager";
@@ -31,7 +32,7 @@ export function registerTaskTimerCommands(plugin: TaskProgressBarPlugin): void {
 				try {
 					const stats = plugin.taskTimerExporter.getExportStats();
 					if (stats.activeTimers === 0) {
-						new Notice("No timer data to export");
+						new Notice(translateUI("No timer data to export"));
 						return;
 					}
 
@@ -52,10 +53,10 @@ export function registerTaskTimerCommands(plugin: TaskProgressBarPlugin): void {
 					document.body.removeChild(a);
 					URL.revokeObjectURL(url);
 
-					new Notice(`Exported ${stats.activeTimers} timer records`);
+					new Notice(translateUI("Exported {{value0}} timer records", { interpolation: { value0: String(stats.activeTimers) } }));
 				} catch (error) {
 					console.error("Error exporting timer data:", error);
-					new Notice("Failed to export timer data");
+					new Notice(translateUI("Failed to export timer data"));
 				}
 			},
 		});
@@ -80,22 +81,22 @@ export function registerTaskTimerCommands(plugin: TaskProgressBarPlugin): void {
 								plugin.taskTimerExporter.importFromJSON(text);
 
 							if (success) {
-								new Notice("Timer data imported successfully");
+								new Notice(translateUI("Timer data imported successfully"));
 							} else {
 								new Notice(
-									"Failed to import timer data - invalid format",
+									translateUI("Failed to import timer data - invalid format"),
 								);
 							}
 						} catch (error) {
 							console.error("Error importing timer data:", error);
-							new Notice("Failed to import timer data");
+							new Notice(translateUI("Failed to import timer data"));
 						}
 					};
 
 					input.click();
 				} catch (error) {
 					console.error("Error setting up import:", error);
-					new Notice("Failed to set up import");
+					new Notice(translateUI("Failed to set up import"));
 				}
 			},
 		});
@@ -107,7 +108,7 @@ export function registerTaskTimerCommands(plugin: TaskProgressBarPlugin): void {
 				try {
 					const stats = plugin.taskTimerExporter.getExportStats();
 					if (stats.activeTimers === 0) {
-						new Notice("No timer data to export");
+						new Notice(translateUI("No timer data to export"));
 						return;
 					}
 
@@ -129,11 +130,11 @@ export function registerTaskTimerCommands(plugin: TaskProgressBarPlugin): void {
 					URL.revokeObjectURL(url);
 
 					new Notice(
-						`Exported ${stats.activeTimers} timer records to YAML`,
+						translateUI("Exported {{value0}} timer records to YAML", { interpolation: { value0: String(stats.activeTimers) } }),
 					);
 				} catch (error) {
 					console.error("Error exporting timer data to YAML:", error);
-					new Notice("Failed to export timer data to YAML");
+					new Notice(translateUI("Failed to export timer data to YAML"));
 				}
 			},
 		});
@@ -160,10 +161,10 @@ export function registerTaskTimerCommands(plugin: TaskProgressBarPlugin): void {
 					document.body.removeChild(a);
 					URL.revokeObjectURL(url);
 
-					new Notice("Task timer backup created");
+					new Notice(translateUI("Task timer backup created"));
 				} catch (error) {
 					console.error("Error creating timer backup:", error);
-					new Notice("Failed to create timer backup");
+					new Notice(translateUI("Failed to create timer backup"));
 				}
 			},
 		});
@@ -191,7 +192,7 @@ export function registerTaskTimerCommands(plugin: TaskProgressBarPlugin): void {
 					new Notice(message, 10000);
 				} catch (error) {
 					console.error("Error getting timer stats:", error);
-					new Notice("Failed to get timer statistics");
+					new Notice(translateUI("Failed to get timer statistics"));
 				}
 			},
 		});

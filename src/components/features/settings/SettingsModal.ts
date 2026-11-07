@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	App,
 	Modal,
@@ -73,7 +74,7 @@ export class SettingsModal extends Modal {
 	private mobileSearchResultsEl: HTMLElement | null = null;
 	private debouncedSearch: () => void;
 
-	private tabs: SettingsTab[] = [
+	private get tabs(): SettingsTab[] { return [
 		// Core Settings
 		{
 			id: "index",
@@ -224,9 +225,9 @@ export class SettingsModal extends Modal {
 			category: "advanced",
 		},
 		{ id: "about", name: t("About"), icon: "info", category: "info" },
-	];
+	]; }
 
-	private categories: { [key: string]: string } = {
+	private get categories(): { [key: string]: string } { return {
 		core: t("Core Settings"),
 		display: t("Display & Progress"),
 		management: t("Task Management"),
@@ -235,7 +236,9 @@ export class SettingsModal extends Modal {
 		integration: t("Integration"),
 		advanced: t("Advanced"),
 		info: t("Information"),
-	};
+	}; }
+
+	private localeEventRef: any;
 
 	constructor(app: App, plugin: TaskProgressBarPlugin) {
 		super(app);
@@ -280,6 +283,12 @@ export class SettingsModal extends Modal {
 	}
 
 	onOpen() {
+		this.localeEventRef = this.app.workspace.on("task-genius:language-changed", () => {
+			this.searchIndex = null;
+			this.renderSidebar();
+			this.renderContent();
+			void this.buildSearchIndex();
+		});
 		const { modalEl, contentEl } = this;
 		modalEl.toggleClass(["mod-settings", "mod-sidebar-layout"], true);
 		contentEl.empty();
@@ -320,6 +329,7 @@ export class SettingsModal extends Modal {
 	}
 
 	onClose() {
+		if (this.localeEventRef) this.app.workspace.offref(this.localeEventRef);
 		this.modalContentEl?.empty();
 		if (this.mobileSearchResultsEl) {
 			this.mobileSearchResultsEl.remove();
@@ -480,11 +490,11 @@ export class SettingsModal extends Modal {
 
 				const tab = this.tabs.find((t) => t.id === this.currentTab);
 				this.mobileTitleEl.createSpan({
-					text: tab?.name || "Settings",
+					text: tab?.name || t("Settings"),
 				});
 			} else {
 				// Show plugin name only
-				this.mobileTitleEl.createSpan({ text: "Task Genius" });
+				this.mobileTitleEl.createSpan({ text: translateUI("Task Genius") });
 			}
 		}
 	}

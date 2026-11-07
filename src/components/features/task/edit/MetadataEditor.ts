@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 /**
  * Task Metadata Editor Component
  * Provides functionality to display and edit task metadata.
@@ -414,9 +415,7 @@ export class TaskMetadataEditor extends Component {
 			fieldContainer.addClass("project-readonly");
 			const indicator = fieldContainer.createDiv({
 				cls: "project-source-indicator",
-				text: `From ${this.task.metadata.tgProject.type}: ${
-					this.task.metadata.tgProject.source || ""
-				}`,
+				text: translateUI("From {{value0}}: {{value1}}", { interpolation: { value0: String(this.task.metadata.tgProject.type), value1: String(this.task.metadata.tgProject.source || "") } }),
 			});
 		}
 

@@ -423,6 +423,8 @@ declare module "obsidian" {
 			callback: () => void,
 		): EventRef;
 
+		on(event: "task-genius:language-changed", callback: () => void): EventRef;
+
 		trigger(event: "task-genius:task-completed", task: Task): void;
 
 		trigger(event: "task-genius:task-added", task: Task): void;
@@ -439,6 +441,7 @@ declare module "obsidian" {
 		): void;
 
 		trigger(event: "task-genius:ics-config-changed"): void;
+		trigger(event: "task-genius:language-changed"): void;
 
 		trigger(event: "task-genius:ics-cache-updated"): void;
 

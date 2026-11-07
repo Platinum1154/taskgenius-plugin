@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 /**
  * Bulk Date Picker Modal
  * Modal for selecting a specific date for bulk operations
@@ -30,7 +31,7 @@ export class BulkDatePickerModal extends Modal {
 
 		// Add title
 		const title = contentEl.createEl("h3", {
-			text: `Set ${this.dateType} for selected tasks`,
+			text: translateUI("Set {{value0}} for selected tasks", { interpolation: { value0: String(this.dateType) } }),
 		});
 		title.style.marginBottom = "var(--size-4-3)";
 

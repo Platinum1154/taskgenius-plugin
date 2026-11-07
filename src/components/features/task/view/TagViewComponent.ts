@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { App, setIcon } from "obsidian";
 import { Task } from "@/types/task";
 import { t } from "@/translations/helper";
@@ -91,7 +92,7 @@ export class TagViewComponent extends TwoColumnViewBase<string> {
 
 		// 更新标签计数
 		if (this.countEl) {
-			this.countEl.setText(`${this.allTagsMap.size} tags`);
+			this.countEl.setText(translateUI("{{value0}} tags", { interpolation: { value0: String(this.allTagsMap.size) } }));
 		}
 	}
 

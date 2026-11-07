@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { App, Component, Menu, Notice, TFile } from "obsidian";
 import TaskProgressBarPlugin from "@/index";
 import { StandardTaskMetadata, Task } from "@/types/task";
@@ -144,7 +145,7 @@ export class FluentActionHandlers extends Component {
 	 */
 	async toggleTaskCompletion(task: Task): Promise<void> {
 		if (!this.plugin.writeAPI) {
-			new Notice("WriteAPI not available");
+			new Notice(translateUI("WriteAPI not available"));
 			return;
 		}
 
@@ -312,28 +313,8 @@ export class FluentActionHandlers extends Component {
 									text: `${priorityIndicator}${cycle.name}: → ${nextStatusResult.statusName}`,
 								});
 								subItem.onClick(async () => {
-									const willComplete = this.isCompletedMark(
-										nextStatusResult.mark
-									);
-									const updatedTask = {
-										...task,
-										status: nextStatusResult.mark,
-										completed: willComplete,
-									};
-
-									if (!task.completed && willComplete) {
-										updatedTask.metadata.completedDate =
-											Date.now();
-									} else if (
-										task.completed &&
-										!willComplete
-									) {
-										updatedTask.metadata.completedDate =
-											undefined;
-									}
-
 									await this.handleKanbanTaskStatusUpdate(
-										updatedTask,
+										task,
 										nextStatusResult.mark
 									);
 								});
@@ -377,21 +358,8 @@ export class FluentActionHandlers extends Component {
 							text: statusName,
 						});
 						subItem.onClick(async () => {
-							const willComplete = this.isCompletedMark(mark);
-							const updatedTask = {
-								...task,
-								status: mark,
-								completed: willComplete,
-							};
-
-							if (!task.completed && willComplete) {
-								updatedTask.metadata.completedDate = Date.now();
-							} else if (task.completed && !willComplete) {
-								updatedTask.metadata.completedDate = undefined;
-							}
-
-							await this.handleKanbanTaskStatusUpdate(
-								updatedTask,
+									await this.handleKanbanTaskStatusUpdate(
+										task,
 								mark
 							);
 						});
@@ -507,11 +475,11 @@ export class FluentActionHandlers extends Component {
 				.setSubmenu();
 
 			const priorityLevels = [
-				{ level: 5, label: "Highest", icon: "alert-triangle" },
-				{ level: 4, label: "High", icon: "arrow-up" },
-				{ level: 3, label: "Medium", icon: "minus" },
-				{ level: 2, label: "Low", icon: "arrow-down" },
-				{ level: 1, label: "Lowest", icon: "chevron-down" },
+				{ level: 5, label: translateUI("Highest"), icon: "alert-triangle" },
+				{ level: 4, label: translateUI("High"), icon: "arrow-up" },
+				{ level: 3, label: translateUI("Medium"), icon: "minus" },
+				{ level: 2, label: translateUI("Low"), icon: "arrow-down" },
+				{ level: 1, label: translateUI("Lowest"), icon: "chevron-down" },
 			] as const;
 
 			priorityLevels.forEach(({ level, label, icon }) => {
@@ -552,7 +520,7 @@ export class FluentActionHandlers extends Component {
 
 		dateTypes.forEach((dateType) => {
 			menu.addItem((item) => {
-				item.setTitle(t(`Set ${this.getDateLabel(dateType)}`));
+				item.setTitle(t("Set {{value0}}", { interpolation: { value0: String(this.getDateLabel(dateType)) } }));
 				item.setIcon("calendar");
 				item.onClick(() => {
 					this.openDatePicker(task, dateType);
@@ -572,15 +540,15 @@ export class FluentActionHandlers extends Component {
 	): void {
 		menu.addItem((item) => {
 			const subMenu = item
-				.setTitle(t(`Postpone ${this.getDateLabel(dateType)}`))
+				.setTitle(t("Postpone {{value0}}", { interpolation: { value0: String(this.getDateLabel(dateType)) } }))
 				.setIcon("calendar-plus")
 				.setSubmenu();
 
 			const quickOptions = [
-				{ days: 1, label: "1 day" },
-				{ days: 2, label: "2 days" },
-				{ days: 3, label: "3 days" },
-				{ days: 7, label: "1 week" },
+				{ days: 1, label: translateUI("1 day") },
+				{ days: 2, label: translateUI("2 days") },
+				{ days: 3, label: translateUI("3 days") },
+				{ days: 7, label: translateUI("1 week") },
 			] as const;
 
 			quickOptions.forEach(({ days, label }) => {
@@ -849,7 +817,7 @@ export class FluentActionHandlers extends Component {
 				await this.handleTaskUpdate(
 					task,
 					updatedTask,
-					t(`${this.getDateLabel(dateType)} updated`)
+					t("{{value0}} updated", { interpolation: { value0: String(this.getDateLabel(dateType)) } })
 				);
 			} else {
 				const updatedTask: Task = {
@@ -863,7 +831,7 @@ export class FluentActionHandlers extends Component {
 				await this.handleTaskUpdate(
 					task,
 					updatedTask,
-					t(`${this.getDateLabel(dateType)} updated`)
+					t("{{value0}} updated", { interpolation: { value0: String(this.getDateLabel(dateType)) } })
 				);
 			}
 		};
@@ -986,12 +954,12 @@ export class FluentActionHandlers extends Component {
 	private getDateLabel(dateType: TaskDateType): string {
 		switch (dateType) {
 			case "startDate":
-				return "Start Date";
+				return t("Start Date");
 			case "scheduledDate":
-				return "Scheduled Date";
+				return t("Scheduled Date");
 			case "dueDate":
 			default:
-				return "Due Date";
+				return t("Due Date");
 		}
 	}
 

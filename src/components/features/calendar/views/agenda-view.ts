@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 /**
  * @deprecated This file is deprecated. Use `tg-agenda-view.ts` instead.
  *
@@ -80,9 +81,9 @@ export class AgendaView extends CalendarViewComponent {
 		// 4. Render the list
 		if (Object.keys(eventsByDay).length === 0) {
 			this.containerEl.setText(
-				`No upcoming events from ${rangeStart.format(
+				translateUI("No upcoming events from {{value0}} to {{value1}}.", { interpolation: { value0: String(rangeStart.format(
 					"MMM D",
-				)} to ${rangeEnd.format("MMM D, YYYY")}.`,
+				)), value1: String(rangeEnd.format("MMM D, YYYY")) } }),
 			);
 			return;
 		}

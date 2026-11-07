@@ -1,3 +1,4 @@
+import { renderLanguageSetting } from "../components/LanguageSetting";
 import { Setting, Notice } from "obsidian";
 import { TaskProgressBarSettingTab } from "@/setting";
 import { t } from "@/translations/helper";
@@ -12,6 +13,8 @@ export function renderInterfaceSettingsTab(
 		.setName(t("User Interface"))
 		.setDesc(t("Configure how Task Genius displays in your workspace."))
 		.setHeading();
+
+	renderLanguageSetting(settingTab.plugin, containerEl);
 
 	// Fluent Interface Settings
 	new Setting(containerEl)

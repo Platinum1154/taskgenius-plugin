@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 /**
  * MCP Integration Settings Tab Component
  */
@@ -172,10 +173,10 @@ export function renderMcpIntegrationSettingsTab(
 		)
 		.addDropdown((dropdown) => {
 			dropdown
-				.addOption("127.0.0.1", "127.0.0.1 (Local only)")
+				.addOption("127.0.0.1", translateUI("127.0.0.1 (Local only)"))
 				.addOption(
 					"0.0.0.0",
-					"0.0.0.0 (All interfaces - for external access)"
+					translateUI("0.0.0.0 (All interfaces - for external access)")
 				)
 				.setValue(plugin.settings.mcpIntegration?.host || "127.0.0.1")
 				.onChange(async (value) => {
@@ -605,7 +606,7 @@ export function renderMcpIntegrationSettingsTab(
 
 	// Method A
 	const methodAItem = authList.createEl("li");
-	methodAItem.createEl("strong", { text: "Method A (Custom Header):" });
+	methodAItem.createEl("strong", { text: translateUI("Method A (Custom Header):") });
 	methodAItem.appendText(" ");
 	methodAItem.createEl("code", { text: `mcp-app-id: ${appId}` });
 	methodAItem.appendText(" + ");
@@ -615,7 +616,7 @@ export function renderMcpIntegrationSettingsTab(
 
 	// Method B
 	const methodBItem = authList.createEl("li");
-	methodBItem.createEl("strong", { text: "Method B (Combined Bearer):" });
+	methodBItem.createEl("strong", { text: translateUI("Method B (Combined Bearer):") });
 	methodBItem.appendText(" ");
 	methodBItem.createEl("code", {
 		text: `Authorization: Bearer ${authToken}+${appId}`,
@@ -1010,7 +1011,7 @@ export function renderMcpIntegrationSettingsTab(
 	const endpointContent = endpointBox.createDiv("mcp-endpoint-content");
 
 	const endpointLabel = endpointContent.createSpan("mcp-endpoint-label");
-	endpointLabel.setText("URL: ");
+	endpointLabel.setText(translateUI("URL: "));
 
 	const endpointUrl = serverUrl;
 	endpointContent.createEl("code", {
@@ -1143,15 +1144,15 @@ export function renderMcpIntegrationSettingsTab(
 		// Tab buttons for different examples
 		const tabContainer = exampleContainer.createDiv("mcp-example-tabs");
 		const curlTab = tabContainer.createEl("button", {
-			text: "cURL",
+			text: translateUI("cURL"),
 			cls: "mcp-example-tab active",
 		});
 		const jsTab = tabContainer.createEl("button", {
-			text: "JavaScript",
+			text: translateUI("JavaScript"),
 			cls: "mcp-example-tab",
 		});
 		const pythonTab = tabContainer.createEl("button", {
-			text: "Python",
+			text: translateUI("Python"),
 			cls: "mcp-example-tab",
 		});
 
@@ -1165,7 +1166,7 @@ export function renderMcpIntegrationSettingsTab(
 			"mcp-example-block active"
 		);
 		curlExample.createEl("div", {
-			text: "1) Initialize",
+			text: translateUI("1) Initialize"),
 			cls: "mcp-example-subtitle",
 		});
 		const curlPreInit = curlExample.createEl("pre", {
@@ -1190,7 +1191,7 @@ export function renderMcpIntegrationSettingsTab(
 		}
 
 		curlExample.createEl("div", {
-			text: "2) Call tool with session id",
+			text: translateUI("2) Call tool with session id"),
 			cls: "mcp-example-subtitle",
 		});
 		const curlPreCall = curlExample.createEl("pre", {
@@ -1219,7 +1220,7 @@ export function renderMcpIntegrationSettingsTab(
 		// JavaScript example (Init + Call)
 		const jsExample = exampleCodeContainer.createDiv("mcp-example-block");
 		jsExample.createEl("div", {
-			text: "1) Initialize",
+			text: translateUI("1) Initialize"),
 			cls: "mcp-example-subtitle",
 		});
 		const jsPreInit = jsExample.createEl("pre", {
@@ -1228,16 +1229,33 @@ export function renderMcpIntegrationSettingsTab(
 
 		if (useMethodB) {
 			jsPreInit.createEl("code", {
-				text: `const initRes = await fetch('${endpointUrl}', {\n  method: 'POST',\n  headers: {\n    'Authorization': '${bearerWithAppId}',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' })\n});\nconst sessionId = initRes.headers.get('mcp-session-id');`,
+				text: `const initRes = await fetch('${endpointUrl}', {
+  method: 'POST',
+  headers: {
+    'Authorization': '${bearerWithAppId}',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' })
+});
+const sessionId = initRes.headers.get('mcp-session-id');`,
 			});
 		} else {
 			jsPreInit.createEl("code", {
-				text: `const initRes = await fetch('${endpointUrl}', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer ${authToken}',\n    'mcp-app-id': '${appId}',\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' })\n});\nconst sessionId = initRes.headers.get('mcp-session-id');`,
+				text: `const initRes = await fetch('${endpointUrl}', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer ${authToken}',
+    'mcp-app-id': '${appId}',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' })
+});
+const sessionId = initRes.headers.get('mcp-session-id');`,
 			});
 		}
 
 		jsExample.createEl("div", {
-			text: "2) Call tool with session id",
+			text: translateUI("2) Call tool with session id"),
 			cls: "mcp-example-subtitle",
 		});
 		const jsPreCall = jsExample.createEl("pre", {
@@ -1246,11 +1264,40 @@ export function renderMcpIntegrationSettingsTab(
 
 		if (useMethodB) {
 			jsPreCall.createEl("code", {
-				text: `const callRes = await fetch('${endpointUrl}', {\n  method: 'POST',\n  headers: {\n    'Authorization': '${bearerWithAppId}',\n    'mcp-session-id': sessionId,\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    jsonrpc: '2.0',\n    id: 2,\n    method: 'tools/call',\n    params: { name: 'query_tasks', arguments: { filter: { completed: false, priority: 5 }, limit: 10 } }\n  })\n});\nconsole.log(await callRes.json());`,
+				text: `const callRes = await fetch('${endpointUrl}', {
+  method: 'POST',
+  headers: {
+    'Authorization': '${bearerWithAppId}',
+    'mcp-session-id': sessionId,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    jsonrpc: '2.0',
+    id: 2,
+    method: 'tools/call',
+    params: { name: 'query_tasks', arguments: { filter: { completed: false, priority: 5 }, limit: 10 } }
+  })
+});
+console.log(await callRes.json());`,
 			});
 		} else {
 			jsPreCall.createEl("code", {
-				text: `const callRes = await fetch('${endpointUrl}', {\n  method: 'POST',\n  headers: {\n    'Authorization': 'Bearer ${authToken}',\n    'mcp-app-id': '${appId}',\n    'mcp-session-id': sessionId,\n    'Content-Type': 'application/json'\n  },\n  body: JSON.stringify({\n    jsonrpc: '2.0',\n    id: 2,\n    method: 'tools/call',\n    params: { name: 'query_tasks', arguments: { filter: { completed: false, priority: 5 }, limit: 10 } }\n  })\n});\nconsole.log(await callRes.json());`,
+				text: `const callRes = await fetch('${endpointUrl}', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer ${authToken}',
+    'mcp-app-id': '${appId}',
+    'mcp-session-id': sessionId,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    jsonrpc: '2.0',
+    id: 2,
+    method: 'tools/call',
+    params: { name: 'query_tasks', arguments: { filter: { completed: false, priority: 5 }, limit: 10 } }
+  })
+});
+console.log(await callRes.json());`,
 			});
 		}
 
@@ -1258,7 +1305,7 @@ export function renderMcpIntegrationSettingsTab(
 		const pythonExample =
 			exampleCodeContainer.createDiv("mcp-example-block");
 		pythonExample.createEl("div", {
-			text: "1) Initialize",
+			text: translateUI("1) Initialize"),
 			cls: "mcp-example-subtitle",
 		});
 		const pythonPreInit = pythonExample.createEl("pre", {
@@ -1301,7 +1348,7 @@ print(f"Session ID: {session_id}")`,
 		}
 
 		pythonExample.createEl("div", {
-			text: "2) Call tool with session id",
+			text: translateUI("2) Call tool with session id"),
 			cls: "mcp-example-subtitle",
 		});
 		const pythonPreCall = pythonExample.createEl("pre", {

@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	App,
 	Component,
@@ -371,7 +372,7 @@ export class ProjectsComponent extends Component {
 		}
 
 		// Update projects count
-		this.countEl?.setText(`${this.allProjectsMap.size} projects`);
+		this.countEl?.setText(translateUI("{{value0}} projects", { interpolation: { value0: String(this.allProjectsMap.size) } }));
 	}
 
 	private renderProjectsList() {

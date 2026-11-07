@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	Component,
 	App,
@@ -85,7 +86,7 @@ export class Habit extends Component {
 		}); // Adjust text based on UI
 		emptyDiv.createEl("br");
 		new ButtonComponent(emptyDiv)
-			.setButtonText("Open Habit")
+			.setButtonText(translateUI("Open Habit"))
 			.onClick(() => {
 				this.plugin.app.setting.open();
 				this.plugin.app.setting.openTabById(this.plugin.manifest.id);
@@ -186,9 +187,7 @@ export class Habit extends Component {
 				const unknownHabit = habit as any;
 				console.warn(`Unsupported habit type: ${unknownHabit?.type}`);
 				container.createDiv({
-					text: `Unsupported habit: ${
-						unknownHabit?.name || "Unknown"
-					}`,
+					text: translateUI("Unsupported habit: {{value0}}", { interpolation: { value0: String(unknownHabit?.name || "Unknown") } }),
 				});
 		}
 	}
@@ -214,12 +213,12 @@ export class EventDetailModal extends Modal {
 		const {contentEl} = this;
 		contentEl.addClass("habit-event-modal");
 		contentEl.createEl("h2", {
-			text: `Record Details for ${this.eventName}`,
+			text: translateUI("Record Details for {{value0}}", { interpolation: { value0: String(this.eventName) } }),
 		});
 
-		new Setting(contentEl).setName("Details").addText((text) =>
+		new Setting(contentEl).setName(translateUI("Details")).addText((text) =>
 			text
-				.setPlaceholder(`Enter details for ${this.eventName}...`)
+				.setPlaceholder(translateUI("Enter details for {{value0}}...", { interpolation: { value0: String(this.eventName) } }))
 				.onChange((value) => {
 					this.details = value;
 				})
@@ -228,7 +227,7 @@ export class EventDetailModal extends Modal {
 		new Setting(contentEl)
 			.addButton((btn) =>
 				btn
-					.setButtonText("Cancel")
+					.setButtonText(translateUI("Cancel"))
 					.setWarning()
 					.onClick(() => {
 						this.close();
@@ -236,7 +235,7 @@ export class EventDetailModal extends Modal {
 			)
 			.addButton((btn) =>
 				btn
-					.setButtonText("Submit")
+					.setButtonText(translateUI("Submit"))
 					.setCta()
 					.onClick(() => {
 						this.close();

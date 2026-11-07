@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	Component,
 	DropdownComponent,
@@ -66,7 +67,7 @@ export class ScheduledHabitCard extends HabitCard {
 		titleDiv
 			.createSpan({ text: this.habit.name, cls: "habit-name" })
 			.onClickEvent(() => {
-				new Notice(`Chart for ${this.habit.name} (Not Implemented)`);
+				new Notice(translateUI("Chart for {{value0}} (Not Implemented)", { interpolation: { value0: String(this.habit.name) } }));
 				// TODO: Implement Chart Dialog
 			});
 

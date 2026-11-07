@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Component, Menu } from "obsidian";
 import TaskProgressBarPlugin from "@/index";
 import { Task } from "@/types/task";
@@ -230,7 +231,7 @@ export class TaskStatusIndicator extends Component {
 		this.element.setAttribute("data-status-mark", context.currentMark);
 		this.element.setAttribute(
 			"aria-label",
-			`Status: ${context.displayName}${nextDescription}`,
+			translateUI("Status: {{value0}}{{value1}}", { interpolation: { value0: String(context.displayName), value1: String(nextDescription) } }),
 		);
 		const disabled =
 			!context.hasCycle || !this.isInteractionAllowed() || this.isProcessing;

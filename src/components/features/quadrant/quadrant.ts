@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { App, Component, setIcon, Platform, DropdownComponent, Notice } from "obsidian";
 import TaskProgressBarPlugin from "@/index";
 import { Task } from "@/types/task";
@@ -92,7 +93,7 @@ export class QuadrantComponent extends Component {
 	private sortOption: QuadrantSortOption = {
 		field: "priority",
 		order: "desc",
-		label: "Priority (High to Low)",
+		label: translateUI("Priority (High to Low)"),
 	};
 	private hideEmptyColumns = false;
 

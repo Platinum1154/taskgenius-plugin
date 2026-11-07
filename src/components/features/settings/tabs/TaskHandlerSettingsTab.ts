@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Setting } from "obsidian";
 import {
 	SortCriterion,
@@ -63,9 +64,9 @@ export function renderTaskHandlerSettingsTab(
 			.setDesc(t("Choose what type of marker to add to moved tasks"))
 			.addDropdown((dropdown) => {
 				dropdown
-					.addOption("version", "Version marker")
-					.addOption("date", "Date marker")
-					.addOption("custom", "Custom marker")
+					.addOption("version", translateUI("Version marker"))
+					.addOption("date", translateUI("Date marker"))
+					.addOption("custom", translateUI("Custom marker"))
 					.setValue(
 						settingTab.plugin.settings.completedTaskMover
 							.taskMarkerType
@@ -91,7 +92,7 @@ export function renderTaskHandlerSettingsTab(
 				)
 				.addText((text) =>
 					text
-						.setPlaceholder("version 1.0")
+						.setPlaceholder(translateUI("version 1.0"))
 						.setValue(
 							settingTab.plugin.settings.completedTaskMover
 								.versionMarker
@@ -112,7 +113,7 @@ export function renderTaskHandlerSettingsTab(
 				)
 				.addText((text) =>
 					text
-						.setPlaceholder("archived on {{date}}")
+						.setPlaceholder(translateUI("archived on {{date}}"))
 						.setValue(
 							settingTab.plugin.settings.completedTaskMover
 								.dateMarker
@@ -133,7 +134,7 @@ export function renderTaskHandlerSettingsTab(
 				)
 				.addText((text) =>
 					text
-						.setPlaceholder("moved {{DATE:YYYY-MM-DD HH:mm}}")
+						.setPlaceholder(translateUI("moved {{DATE:YYYY-MM-DD HH:mm}}"))
 						.setValue(
 							settingTab.plugin.settings.completedTaskMover
 								.customMarker
@@ -280,7 +281,7 @@ export function renderTaskHandlerSettingsTab(
 					)
 					.addText((text) =>
 						text
-							.setPlaceholder("Completed Tasks")
+							.setPlaceholder(translateUI("Completed Tasks"))
 							.setValue(
 								settingTab.plugin.settings.completedTaskMover
 									.defaultHeadingName
@@ -328,9 +329,9 @@ export function renderTaskHandlerSettingsTab(
 			)
 			.addDropdown((dropdown) => {
 				dropdown
-					.addOption("version", "Version marker")
-					.addOption("date", "Date marker")
-					.addOption("custom", "Custom marker")
+					.addOption("version", translateUI("Version marker"))
+					.addOption("date", translateUI("Date marker"))
+					.addOption("custom", translateUI("Custom marker"))
 					.setValue(
 						settingTab.plugin.settings.completedTaskMover
 							.incompletedTaskMarkerType
@@ -357,7 +358,7 @@ export function renderTaskHandlerSettingsTab(
 				)
 				.addText((text) =>
 					text
-						.setPlaceholder("version 1.0")
+						.setPlaceholder(translateUI("version 1.0"))
 						.setValue(
 							settingTab.plugin.settings.completedTaskMover
 								.incompletedVersionMarker
@@ -378,7 +379,7 @@ export function renderTaskHandlerSettingsTab(
 				)
 				.addText((text) =>
 					text
-						.setPlaceholder("moved on {{date}}")
+						.setPlaceholder(translateUI("moved on {{date}}"))
 						.setValue(
 							settingTab.plugin.settings.completedTaskMover
 								.incompletedDateMarker
@@ -399,7 +400,7 @@ export function renderTaskHandlerSettingsTab(
 				)
 				.addText((text) =>
 					text
-						.setPlaceholder("moved {{DATE:YYYY-MM-DD HH:mm}}")
+						.setPlaceholder(translateUI("moved {{DATE:YYYY-MM-DD HH:mm}}"))
 						.setValue(
 							settingTab.plugin.settings.completedTaskMover
 								.incompletedCustomMarker
@@ -516,7 +517,7 @@ export function renderTaskHandlerSettingsTab(
 					)
 					.addText((text) =>
 						text
-							.setPlaceholder("Incomplete Tasks")
+							.setPlaceholder(translateUI("Incomplete Tasks"))
 							.setValue(
 								settingTab.plugin.settings.completedTaskMover
 									.incompletedDefaultHeadingName
@@ -771,7 +772,7 @@ export function renderTaskHandlerSettingsTab(
 			.setDesc(t("Default section for archive action"))
 			.addText((text) =>
 				text
-					.setPlaceholder("Completed Tasks")
+					.setPlaceholder(translateUI("Completed Tasks"))
 					.setValue(
 						settingTab.plugin.settings.onCompletion.defaultArchiveSection
 					)

@@ -802,6 +802,8 @@ export interface ChangelogSettings {
 }
 
 export interface TaskProgressBarSettings {
+	/** Plugin UI language; auto follows Obsidian without changing its locale. */
+	language?: "auto" | "en" | "zh-cn";
 	// General Settings (Example)
 	progressBarDisplayMode: "none" | "graphical" | "text" | "both";
 	supportHoverToShowProgressInfo: boolean;
@@ -1000,6 +1002,7 @@ export interface TaskProgressBarSettings {
 
 /** Define the default settings */
 export const DEFAULT_SETTINGS: TaskProgressBarSettings = {
+	language: "auto",
 	changelog: {
 		enabled: true,
 		lastVersion: "",

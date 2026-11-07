@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Setting, TextAreaComponent, Notice, setIcon } from "obsidian";
 import type TaskProgressBarPlugin from "@/index";
 import { t } from "@/translations/helper";
@@ -43,14 +44,14 @@ export class TaskCreationGuide {
 		const basicFormat = formatsSection.createDiv("format-example");
 		basicFormat.createEl("h4", { text: t("Basic Task") });
 		basicFormat.createEl("code", {
-			text: "- [ ] Complete project documentation",
+			text: translateUI("- [ ] Complete project documentation"),
 		});
 
 		// Emoji format
 		const emojiFormat = formatsSection.createDiv("format-example");
 		emojiFormat.createEl("h4", { text: t("With Emoji Metadata") });
 		emojiFormat.createEl("code", {
-			text: "- [ ] Complete project documentation 📅 2024-01-15 🔺 #project/docs",
+			text: translateUI("- [ ] Complete project documentation 📅 2024-01-15 🔺 #project/docs"),
 		});
 
 		const emojiLegend = emojiFormat.createDiv("format-legend");
@@ -64,14 +65,14 @@ export class TaskCreationGuide {
 		const dataviewFormat = formatsSection.createDiv("format-example");
 		dataviewFormat.createEl("h4", { text: t("With Dataview Metadata") });
 		dataviewFormat.createEl("code", {
-			text: "- [ ] Complete project documentation [due:: 2024-01-15] [priority:: high] [project:: docs]",
+			text: translateUI("- [ ] Complete project documentation [due:: 2024-01-15] [priority:: high] [project:: docs]"),
 		});
 
 		// Mixed format
 		const mixedFormat = formatsSection.createDiv("format-example");
 		mixedFormat.createEl("h4", { text: t("Mixed Format") });
 		mixedFormat.createEl("code", {
-			text: "- [ ] Complete project documentation 📅 2024-01-15 [priority:: high] @work",
+			text: translateUI("- [ ] Complete project documentation 📅 2024-01-15 [priority:: high] @work"),
 		});
 
 		const mixedLegend = mixedFormat.createDiv("format-legend");

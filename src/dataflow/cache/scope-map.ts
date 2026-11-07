@@ -28,14 +28,9 @@
  * will rename and consolidate these fields, so a stringly-typed map is more
  * resilient to refactoring than a structural type that fights every move.
  *
- * Discovery
- * ---------
- * The current set of mappings was derived by walking every existing caller of
- * `Orchestrator.onSettingsChange` (only 3 sites at the time of writing, all in
- * `IndexSettingsTab.ts`). Note: those callers currently pass `["parser"]` for
- * `fileMetadataInheritance` changes which is technically wrong — file metadata
- * inheritance is an augment-time concern. The map below reflects the CORRECT
- * mapping; Phase 1's migration will fix the call sites.
+ * File frontmatter inheritance and enhanced project detection affect both
+ * parser output and augmentation. Both caches must be invalidated when those
+ * settings change; clearing only augmentation can retain old inherited tags.
  */
 
 /** The four cache namespaces the Orchestrator manages. */
@@ -58,6 +53,8 @@ export const SETTINGS_FIELD_TO_SCOPES: Readonly<
 	// Anything that changes how raw markdown / canvas / file-metadata is parsed
 	// into Task records. Invalidates the "raw" cache namespace.
 	taskStatuses: ["parser"],
+	fileParsingConfig: ["parser"],
+	timeParsing: ["parser"],
 	preferMetadataFormat: ["parser"],
 	enableCustomDateFormats: ["parser"],
 	customDateFormats: ["parser"],
@@ -77,13 +74,13 @@ export const SETTINGS_FIELD_TO_SCOPES: Readonly<
 	// --- Augment scope ---
 	// Anything that changes how parsed tasks are merged with file/project metadata.
 	// Invalidates the "augmented" cache namespace.
-	fileMetadataInheritance: ["augment"],
+	fileMetadataInheritance: ["parser", "augment"],
 
 	// --- Project scope ---
 	// Anything that changes project detection or project metadata enrichment.
 	// Invalidates "project" + "augment" namespaces (project changes ripple
 	// through augmentation).
-	projectConfig: ["project", "augment"],
+	projectConfig: ["parser", "project", "augment"],
 
 	// --- Index scope ---
 	// Anything that changes the consolidated index shape itself. Rare — most

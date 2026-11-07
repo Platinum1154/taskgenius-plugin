@@ -1,3 +1,5 @@
+import { getInterfaceLocale } from "@/utils/date/interface-date";
+import { t as translateUI } from "@/translations/helper";
 import { App, Component, debounce, setIcon, Menu } from "obsidian";
 import { StandardTaskMetadata, Task } from "@/types/task";
 import TaskProgressBarPlugin from "@/index";
@@ -159,7 +161,7 @@ export class InlineEditor extends Component {
 				editorContainer,
 				{
 					value: content,
-					placeholder: "Enter task content...",
+					placeholder: translateUI("Enter task content..."),
 					cls: "inline-embedded-editor",
 					onEnter: (editor: any, mod: any, shift: any) => {
 						// Save and exit on Enter (regardless of shift)
@@ -321,7 +323,7 @@ export class InlineEditor extends Component {
 	public showAddMetadataButton(targetEl: HTMLElement): void {
 		const addBtn = targetEl.createEl("button", {
 			cls: "add-metadata-btn",
-			attr: { "aria-label": "Add metadata" },
+			attr: { "aria-label": translateUI("Add metadata") },
 		});
 		setIcon(addBtn, "plus");
 
@@ -343,7 +345,7 @@ export class InlineEditor extends Component {
 			type: "text",
 			cls: "inline-project-input",
 			value: effectiveProject || "",
-			placeholder: "Enter project name",
+			placeholder: translateUI("Enter project name"),
 		});
 
 		// Add visual indicator for tgProject - only show if no user-set project exists
@@ -444,7 +446,7 @@ export class InlineEditor extends Component {
 			type: "text",
 			cls: "inline-tags-input",
 			value: currentValue || "",
-			placeholder: "Enter tags (comma separated)",
+			placeholder: translateUI("Enter tags (comma separated)"),
 		});
 
 		this.activeInput = input;
@@ -488,7 +490,7 @@ export class InlineEditor extends Component {
 			type: "text",
 			cls: "inline-context-input",
 			value: currentValue || "",
-			placeholder: "Enter context",
+			placeholder: translateUI("Enter context"),
 		});
 
 		this.activeInput = input;
@@ -587,12 +589,12 @@ export class InlineEditor extends Component {
 
 		// Add priority options
 		const options = [
-			{ value: "", text: "None" },
-			{ value: "1", text: "⏬️ Lowest" },
-			{ value: "2", text: "🔽 Low" },
-			{ value: "3", text: "🔼 Medium" },
-			{ value: "4", text: "⏫ High" },
-			{ value: "5", text: "🔺 Highest" },
+			{ value: "", text: translateUI("None") },
+			{ value: "1", text: translateUI("⏬️ Lowest") },
+			{ value: "2", text: translateUI("🔽 Low") },
+			{ value: "3", text: translateUI("🔼 Medium") },
+			{ value: "4", text: translateUI("⏫ High") },
+			{ value: "5", text: translateUI("🔺 Highest") },
 		];
 
 		options.forEach((option) => {
@@ -623,7 +625,7 @@ export class InlineEditor extends Component {
 			type: "text",
 			cls: "inline-recurrence-input",
 			value: currentValue || "",
-			placeholder: "e.g. every day, every 2 weeks",
+			placeholder: translateUI("e.g. every day, every 2 weeks"),
 		});
 
 		this.activeInput = input;
@@ -761,7 +763,7 @@ export class InlineEditor extends Component {
 				(this.task.metadata.dependsOn
 					? this.task.metadata.dependsOn.join(", ")
 					: ""),
-			placeholder: "Task IDs separated by commas",
+			placeholder: translateUI("Task IDs separated by commas"),
 		});
 
 		this.activeInput = input;
@@ -804,7 +806,7 @@ export class InlineEditor extends Component {
 			type: "text",
 			cls: "inline-id-input",
 			value: currentValue || this.task.metadata.id || "",
-			placeholder: "Unique task identifier",
+			placeholder: translateUI("Unique task identifier"),
 		});
 
 		this.activeInput = input;
@@ -995,19 +997,19 @@ export class InlineEditor extends Component {
 		const menu = new Menu();
 
 		const availableFields = [
-			{ key: "project", label: "Project", icon: "folder" },
-			{ key: "tags", label: "Tags", icon: "tag" },
-			{ key: "context", label: "Context", icon: "at-sign" },
-			{ key: "dueDate", label: "Due Date", icon: "calendar" },
-			{ key: "startDate", label: "Start Date", icon: "play" },
-			{ key: "scheduledDate", label: "Scheduled Date", icon: "clock" },
-			{ key: "cancelledDate", label: "Cancelled Date", icon: "x" },
-			{ key: "completedDate", label: "Completed Date", icon: "check" },
-			{ key: "priority", label: "Priority", icon: "alert-triangle" },
-			{ key: "recurrence", label: "Recurrence", icon: "repeat" },
-			{ key: "onCompletion", label: "On Completion", icon: "flag" },
-			{ key: "dependsOn", label: "Depends On", icon: "link" },
-			{ key: "id", label: "Task ID", icon: "hash" },
+			{ key: "project", label: translateUI("Project"), icon: "folder" },
+			{ key: "tags", label: translateUI("Tags"), icon: "tag" },
+			{ key: "context", label: translateUI("Context"), icon: "at-sign" },
+			{ key: "dueDate", label: translateUI("Due Date"), icon: "calendar" },
+			{ key: "startDate", label: translateUI("Start Date"), icon: "play" },
+			{ key: "scheduledDate", label: translateUI("Scheduled Date"), icon: "clock" },
+			{ key: "cancelledDate", label: translateUI("Cancelled Date"), icon: "x" },
+			{ key: "completedDate", label: translateUI("Completed Date"), icon: "check" },
+			{ key: "priority", label: translateUI("Priority"), icon: "alert-triangle" },
+			{ key: "recurrence", label: translateUI("Recurrence"), icon: "repeat" },
+			{ key: "onCompletion", label: translateUI("On Completion"), icon: "flag" },
+			{ key: "dependsOn", label: translateUI("Depends On"), icon: "link" },
+			{ key: "id", label: translateUI("Task ID"), icon: "hash" },
 		];
 
 		// Filter out fields that already have values
@@ -1054,7 +1056,7 @@ export class InlineEditor extends Component {
 		if (fieldsToShow.length === 0) {
 			menu.addItem((item) => {
 				item.setTitle(
-					"All metadata fields are already set"
+					translateUI("All metadata fields are already set")
 				).setDisabled(true);
 			});
 		} else {
@@ -1363,7 +1365,7 @@ export class InlineEditor extends Component {
 				] as number;
 				if (dateValue) {
 					const date = new Date(dateValue);
-					targetEl.textContent = date.toLocaleDateString("en-US", {
+					targetEl.textContent = date.toLocaleDateString(getInterfaceLocale(), {
 						year: "numeric",
 						month: "long",
 						day: "numeric",

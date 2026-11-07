@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Notice, TFile, debounce } from "obsidian";
 import type { WorkspaceLeaf } from "obsidian";
 import type { Task } from "@/types/task";
@@ -42,7 +43,7 @@ export class CalendarWidgetView extends BaseWidgetView<CalendarWidgetState> {
 	}
 
 	getDisplayText(): string {
-		return "Calendar Widget";
+		return translateUI("Calendar Widget");
 	}
 
 	protected isLinkable(): boolean {
@@ -160,7 +161,7 @@ export class CalendarWidgetView extends BaseWidgetView<CalendarWidgetState> {
 			this.fullHostEl?.empty();
 			this.fullHostEl?.createDiv({
 				cls: "tg-widget-empty",
-				text: "Dataflow is not available",
+				text: translateUI("Dataflow is not available"),
 			});
 			return;
 		}
@@ -199,7 +200,7 @@ export class CalendarWidgetView extends BaseWidgetView<CalendarWidgetState> {
 		if (tasks.length === 0) {
 			this.miniTasksEl.createDiv({
 				cls: "tg-widget-section-empty",
-				text: "No tasks",
+				text: translateUI("No tasks"),
 			});
 			return;
 		}
@@ -233,7 +234,7 @@ export class CalendarWidgetView extends BaseWidgetView<CalendarWidgetState> {
 		completed: boolean,
 	): Promise<void> {
 		if (!this.plugin.writeAPI) {
-			new Notice("Write API not available");
+			new Notice(translateUI("Write API not available"));
 			return;
 		}
 

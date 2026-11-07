@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { App, Component, debounce, moment } from "obsidian";
 import { CalendarEvent } from "@/components/features/calendar/index"; // Adjust path as needed
 import { EventLayout, determineEventColor } from "../algorithm"; // Adjust path as needed
@@ -128,21 +129,15 @@ export class CalendarEventComponent extends Component {
 	private setTooltip(): void {
 		this.eventEl.setAttr(
 			"title",
-			`${clearAllMarks(this.event.title) || "(No title)"}\nStatus: ${
-				this.event.status
-			}${
-				this.event.metadata.dueDate
-					? `\nDue: ${moment(this.event.metadata.dueDate).format(
+			translateUI("{{value0}}\nStatus: {{value1}}{{value2}}{{value3}}", { interpolation: { value0: String(clearAllMarks(this.event.title) || translateUI("(No title)")), value1: String(this.event.status), value2: String(this.event.metadata.dueDate
+					? `\n${translateUI("Due")}: ${moment(this.event.metadata.dueDate).format(
 							"YYYY-MM-DD",
 						)}`
-					: ""
-			}${
-				this.event.metadata.startDate
-					? `\nStart: ${moment(this.event.metadata.startDate).format(
+					: ""), value3: String(this.event.metadata.startDate
+					? `\n${translateUI("Start")}: ${moment(this.event.metadata.startDate).format(
 							"YYYY-MM-DD",
 						)}`
-					: ""
-			}`,
+					: "") } }),
 		);
 	}
 

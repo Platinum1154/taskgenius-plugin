@@ -22,7 +22,7 @@ describe("Orchestrator.onSettingsFieldsChanged (W4a)", () => {
 			]);
 
 			expect(onSettingsChange).toHaveBeenCalledTimes(1);
-			expect(onSettingsChange.mock.calls[0][0]).toEqual(["augment"]);
+			expect(onSettingsChange.mock.calls[0][0]).toEqual(["parser", "augment"]);
 
 			onSettingsChange.mockRestore();
 		} finally {

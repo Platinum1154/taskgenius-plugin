@@ -19,6 +19,7 @@ export type TranslationLoader = (locale: SupportedLocale) => Promise<Translation
 class TranslationManager {
 	private static instance: TranslationManager;
 	private currentLocale: SupportedLocale = "en";
+	private initializationId = 0;
 	private translations: Map<string, Translation> = new Map();
 	private fallbackTranslation: Translation = {};
 	private lowercaseKeyMap: Map<string, Map<string, string>> = new Map();
@@ -42,6 +43,7 @@ class TranslationManager {
 		locale: string,
 		loader: TranslationLoader,
 	): Promise<void> {
+		const requestId = ++this.initializationId;
 		await this.loadLocale("en", loader);
 
 		const resolvedLocale = this.resolveLocale(locale);
@@ -49,12 +51,12 @@ class TranslationManager {
 			try {
 				await this.loadLocale(resolvedLocale, loader);
 			} catch {
-				this.currentLocale = "en";
+				if (requestId === this.initializationId) this.currentLocale = "en";
 				return;
 			}
 		}
 
-		this.currentLocale = resolvedLocale;
+		if (requestId === this.initializationId) this.currentLocale = resolvedLocale;
 	}
 
 	public setLocale(locale: string): void {
@@ -139,7 +141,7 @@ class TranslationManager {
 	}
 
 	public resolveLocale(locale: string): SupportedLocale {
-		const normalized = locale.toLowerCase();
+		const normalized = locale.toLowerCase().replace(/_/g, "-");
 		if (this.isSupportedLocale(normalized)) {
 			return normalized;
 		}

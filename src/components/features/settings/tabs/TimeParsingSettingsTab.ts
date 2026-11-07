@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { PluginSettingTab, Setting } from "obsidian";
 import { t } from "@/translations/helper";
 import { TaskProgressBarSettingTab } from "@/setting";
@@ -101,7 +102,7 @@ export function renderTimeParsingSettingsTab(
 				pluginSettingTab.plugin.settings.timeParsing?.dateKeywords
 					?.start || [];
 			text.setValue(keywords.join(", "))
-				.setPlaceholder("start, begin, from, 开始, 从")
+				.setPlaceholder(translateUI("start, begin, from, 开始, 从"))
 				.onChange(async (value) => {
 					if (!pluginSettingTab.plugin.settings.timeParsing) return;
 					pluginSettingTab.plugin.settings.timeParsing.dateKeywords.start =
@@ -123,7 +124,7 @@ export function renderTimeParsingSettingsTab(
 				pluginSettingTab.plugin.settings.timeParsing?.dateKeywords
 					?.due || [];
 			text.setValue(keywords.join(", "))
-				.setPlaceholder("due, deadline, by, until, 截止, 到期, 之前")
+				.setPlaceholder(translateUI("due, deadline, by, until, 截止, 到期, 之前"))
 				.onChange(async (value) => {
 					if (!pluginSettingTab.plugin.settings.timeParsing) return;
 					pluginSettingTab.plugin.settings.timeParsing.dateKeywords.due =
@@ -145,7 +146,7 @@ export function renderTimeParsingSettingsTab(
 				pluginSettingTab.plugin.settings.timeParsing?.dateKeywords
 					?.scheduled || [];
 			text.setValue(keywords.join(", "))
-				.setPlaceholder("scheduled, on, at, 安排, 计划, 在")
+				.setPlaceholder(translateUI("scheduled, on, at, 安排, 计划, 在"))
 				.onChange(async (value) => {
 					if (!pluginSettingTab.plugin.settings.timeParsing) return;
 					pluginSettingTab.plugin.settings.timeParsing.dateKeywords.scheduled =
@@ -339,7 +340,7 @@ export function renderTimeParsingSettingsTab(
 			cls: "time-parsing-example",
 		});
 		exampleEl.createEl("span", {
-			text: "Input: ",
+			text: translateUI("Input: "),
 			cls: "example-label",
 		});
 		exampleEl.createEl("code", {
@@ -348,7 +349,7 @@ export function renderTimeParsingSettingsTab(
 		});
 		exampleEl.createEl("br");
 		exampleEl.createEl("span", {
-			text: "Output: ",
+			text: translateUI("Output: "),
 			cls: "example-label",
 		});
 		exampleEl.createEl("code", {

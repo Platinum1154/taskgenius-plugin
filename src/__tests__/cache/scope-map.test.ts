@@ -24,13 +24,14 @@ describe("scope-map (W4a)", () => {
 			expect(scopesForFields(["taskStatuses"])).toEqual(["parser"]);
 		});
 
-		it("projectConfig → project + augment", () => {
+		it("projectConfig → parser + project + augment", () => {
 			const scopes = scopesForFields(["projectConfig"]);
-			expect(new Set(scopes)).toEqual(new Set(["project", "augment"]));
+			expect(new Set(scopes)).toEqual(new Set(["parser", "project", "augment"]));
 		});
 
-		it("fileMetadataInheritance → augment", () => {
+		it("fileMetadataInheritance → parser + augment", () => {
 			expect(scopesForFields(["fileMetadataInheritance"])).toEqual([
+				"parser",
 				"augment",
 			]);
 		});
@@ -42,7 +43,7 @@ describe("scope-map (W4a)", () => {
 				scopesForFields([
 					"fileMetadataInheritance.inheritFromFrontmatter",
 				]),
-			).toEqual(["augment"]);
+			).toEqual(["parser", "augment"]);
 		});
 
 		it("fileSource.recognitionStrategies.tags.taskTags resolves via parent", () => {
@@ -57,7 +58,7 @@ describe("scope-map (W4a)", () => {
 			const scopes = scopesForFields([
 				"projectConfig.pathMappings.foo",
 			]);
-			expect(new Set(scopes)).toEqual(new Set(["project", "augment"]));
+			expect(new Set(scopes)).toEqual(new Set(["parser", "project", "augment"]));
 		});
 	});
 
@@ -120,7 +121,7 @@ describe("scope-map (W4a)", () => {
 				"fileMetadataInheritance.inheritFromFrontmatterForSubtasks",
 			];
 			for (const f of fields) {
-				expect(scopesForFields([f])).toEqual(["augment"]);
+				expect(scopesForFields([f])).toEqual(["parser", "augment"]);
 			}
 		});
 

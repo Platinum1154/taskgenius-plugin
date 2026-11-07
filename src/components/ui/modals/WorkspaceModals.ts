@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	Modal,
 	Notice,
@@ -110,7 +111,7 @@ export class CreateWorkspaceModal extends Modal {
 				if (currentWorkspace) {
 					dropdown.addOption(
 						currentWorkspace.id,
-						`Current (${currentWorkspace.name})`,
+						translateUI("Current ({{value0}})", { interpolation: { value0: String(currentWorkspace.name) } }),
 					);
 				}
 

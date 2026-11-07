@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Component, debounce, setIcon } from "obsidian";
 import { FilterCategory, FilterDropdownOptions } from "./filter-type";
 import TaskProgressBarPlugin from "@/index";
@@ -72,7 +73,7 @@ export class FilterDropdown extends Component {
 		header.createEl("input", {
 			type: "text",
 			cls: "filter-dropdown-search",
-			attr: { placeholder: "Filter..." },
+			attr: { placeholder: translateUI("Filter...") },
 		});
 
 		dropdown.createEl("div", { cls: "filter-dropdown-list" });

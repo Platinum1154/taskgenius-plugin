@@ -1,3 +1,5 @@
+import { getInterfaceLocale } from "@/utils/date/interface-date";
+import { t as translateUI } from "@/translations/helper";
 import { Notice, TFile, debounce, setIcon } from "obsidian";
 import type { WorkspaceLeaf } from "obsidian";
 import type { Task } from "@/types/task";
@@ -48,7 +50,7 @@ export class TasksWidgetView extends BaseWidgetView<TasksWidgetState> {
 	}
 
 	getDisplayText(): string {
-		return "Tasks Widget";
+		return translateUI("Tasks Widget");
 	}
 
 	protected isLinkable(): boolean {
@@ -94,7 +96,7 @@ export class TasksWidgetView extends BaseWidgetView<TasksWidgetState> {
 
 		toolbar.createSpan({
 			cls: "tg-tasks-toolbar-label",
-			text: "Group by:",
+			text: translateUI("Group by:"),
 		});
 
 		const select = toolbar.createEl("select", {
@@ -135,7 +137,7 @@ export class TasksWidgetView extends BaseWidgetView<TasksWidgetState> {
 			this.taskContainerEl?.empty();
 			this.taskContainerEl?.createDiv({
 				cls: "tg-widget-empty",
-				text: "Dataflow is not available",
+				text: translateUI("Dataflow is not available"),
 			});
 			return;
 		}
@@ -190,7 +192,7 @@ export class TasksWidgetView extends BaseWidgetView<TasksWidgetState> {
 		if (this.filteredTasks.length === 0) {
 			this.taskContainerEl.createDiv({
 				cls: "tg-widget-empty",
-				text: "No tasks",
+				text: translateUI("No tasks"),
 			});
 			return;
 		}
@@ -340,13 +342,13 @@ export class TasksWidgetView extends BaseWidgetView<TasksWidgetState> {
 			(target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
 		);
 
-		if (diff === 0) return "Today";
-		if (diff === 1) return "Tomorrow";
-		if (diff === -1) return "Yesterday";
-		if (diff < -1) return `${Math.abs(diff)}d ago`;
-		if (diff < 7) return `In ${diff}d`;
+		if (diff === 0) return translateUI("Today");
+		if (diff === 1) return translateUI("Tomorrow");
+		if (diff === -1) return translateUI("Yesterday");
+		if (diff < -1) return translateUI("{{count}}d ago", { interpolation: { count: Math.abs(diff) } });
+		if (diff < 7) return translateUI("In {{count}}d", { interpolation: { count: diff } });
 
-		return date.toLocaleDateString(undefined, {
+		return date.toLocaleDateString(getInterfaceLocale(), {
 			month: "short",
 			day: "numeric",
 		});
@@ -374,7 +376,7 @@ export class TasksWidgetView extends BaseWidgetView<TasksWidgetState> {
 		completed: boolean,
 	): Promise<void> {
 		if (!this.plugin.writeAPI) {
-			new Notice("Write API not available");
+			new Notice(translateUI("Write API not available"));
 			return;
 		}
 
