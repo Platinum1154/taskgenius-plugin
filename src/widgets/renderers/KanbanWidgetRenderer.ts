@@ -1,3 +1,5 @@
+import { getInterfaceLocale } from "@/utils/date/interface-date";
+import { t as translateUI } from "@/translations/helper";
 import { Notice, TFile, App } from "obsidian";
 import Sortable from "sortablejs";
 import type { Task } from "@/types/task";
@@ -26,9 +28,9 @@ export interface KanbanWidgetState {
 }
 
 const DEFAULT_COLUMNS: KanbanColumnConfig[] = [
-	{ id: "todo", label: "To Do", statusChars: [" "] },
-	{ id: "doing", label: "In Progress", statusChars: ["/"] },
-	{ id: "done", label: "Done", statusChars: ["x", "X"] },
+	{ id: "todo", label: translateUI("To Do"), statusChars: [" "] },
+	{ id: "doing", label: translateUI("In Progress"), statusChars: ["/"] },
+	{ id: "done", label: translateUI("Done"), statusChars: ["x", "X"] },
 ];
 
 const DEFAULT_STATE: KanbanWidgetState = {
@@ -109,7 +111,7 @@ export class KanbanWidgetRenderer extends BaseWidgetRenderer<KanbanWidgetState> 
 			this.boardContainerEl?.empty();
 			this.boardContainerEl?.createDiv({
 				cls: "tg-widget-empty",
-				text: "Dataflow is not available",
+				text: translateUI("Dataflow is not available"),
 			});
 			return;
 		}
@@ -287,13 +289,13 @@ export class KanbanWidgetRenderer extends BaseWidgetRenderer<KanbanWidgetState> 
 			(target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
 		);
 
-		if (diff === 0) return "Today";
-		if (diff === 1) return "Tomorrow";
-		if (diff === -1) return "Yesterday";
-		if (diff < -1) return `${Math.abs(diff)}d ago`;
-		if (diff < 7) return `In ${diff}d`;
+		if (diff === 0) return translateUI("Today");
+		if (diff === 1) return translateUI("Tomorrow");
+		if (diff === -1) return translateUI("Yesterday");
+		if (diff < -1) return translateUI("{{count}}d ago", { interpolation: { count: Math.abs(diff) } });
+		if (diff < 7) return translateUI("In {{count}}d", { interpolation: { count: diff } });
 
-		return date.toLocaleDateString(undefined, {
+		return date.toLocaleDateString(getInterfaceLocale(), {
 			month: "short",
 			day: "numeric",
 		});
@@ -328,7 +330,7 @@ export class KanbanWidgetRenderer extends BaseWidgetRenderer<KanbanWidgetState> 
 		completed: boolean,
 	): Promise<void> {
 		if (!this.plugin.writeAPI) {
-			new Notice("Write API not available");
+			new Notice(translateUI("Write API not available"));
 			return;
 		}
 

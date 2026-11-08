@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Notice, setIcon, Setting } from "obsidian";
 import { TaskProgressBarSettingTab } from "@/setting";
 import { t } from "@/translations/helper";
@@ -12,7 +13,7 @@ export function renderAboutSettingsTab(
 
 	new Setting(containerEl)
 		.setName(t("Version"))
-		.setDesc(`Task Genius v${settingTab.plugin.manifest.version}`);
+		.setDesc(translateUI("Task Genius v{{value0}}", { interpolation: { value0: String(settingTab.plugin.manifest.version) } }));
 
 	new Setting(containerEl)
 		.setName(t("Donate"))
@@ -103,7 +104,7 @@ export function renderAboutSettingsTab(
 			},
 		},
 		(el) => {
-			el.setText(" @Jsmorabito");
+			el.setText(translateUI(" @Jsmorabito"));
 		}
 	);
 

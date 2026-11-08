@@ -1,3 +1,5 @@
+import english from "./locale/en";
+import chinese from "./locale/zh-cn";
 import { moment, requestUrl } from "obsidian";
 import { translationManager, type SupportedLocale, type TranslationLoader } from "./manager";
 import type { Translation } from "./types";
@@ -60,18 +62,10 @@ async function fetchRemoteTranslation(locale: SupportedLocale): Promise<Translat
 }
 
 const loadTranslation: TranslationLoader = async (locale) => {
-	if (locale === "en") {
-		const cached = await readLocalCache("en");
-		if (cached) return cached;
-
-		try {
-			const remote = await fetchRemoteTranslation("en");
-			await writeLocalCache("en", remote);
-			return remote;
-		} catch {
-			return {};
-		}
-	}
+	// Core languages are bundled: offline startup and stale caches must not
+	// cause untranslated UI or overwrite the shipped, complete dictionaries.
+	if (locale === "en") return english;
+	if (locale === "zh-cn") return chinese;
 
 	const cached = await readLocalCache(locale);
 	if (cached) {
@@ -97,8 +91,8 @@ function refreshLocaleInBackground(locale: SupportedLocale): void {
 		.catch(() => { /* stale-while-revalidate: ignore background errors */ });
 }
 
-export async function initializeTranslations(): Promise<void> {
-	const currentLocale = moment.locale();
+export async function initializeTranslations(language = "auto"): Promise<void> {
+	const currentLocale = language === "auto" ? moment.locale() : language;
 	await translationManager.initializeLocale(currentLocale, loadTranslation);
 }
 

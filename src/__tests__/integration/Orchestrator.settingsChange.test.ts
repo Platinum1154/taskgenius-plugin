@@ -118,3 +118,80 @@ describe("Orchestrator settings change → cache invalidation (W5.2)", () => {
 		}
 	});
 });
+
+
+describe("settings edited in place", () => {
+	it("invalidates project/parser caches when a nested file project setting changes", async () => {
+		const fx = await buildOrchestrator();
+		try {
+			const update = jest.spyOn(fx.orchestrator, "onSettingsFieldsChanged").mockResolvedValue();
+			fx.plugin.settings.projectConfig = { ...fx.plugin.settings.projectConfig, metadataConfig: { ...fx.plugin.settings.projectConfig.metadataConfig, metadataKey: "new_project" } };
+			await fx.orchestrator.updateSettings(fx.plugin.settings);
+			expect(update).toHaveBeenCalledWith(expect.arrayContaining(["projectConfig"]));
+			update.mockClear(); await fx.orchestrator.updateSettings(fx.plugin.settings);
+			expect(update).not.toHaveBeenCalled();
+		} finally { await fx.dispose(); }
+	});
+	it("does not rebuild the task index for a display-only setting", async () => {
+		const fx = await buildOrchestrator();
+		try {
+			const update = jest.spyOn(fx.orchestrator, "onSettingsFieldsChanged").mockResolvedValue();
+			fx.plugin.settings.defaultViewMode = "tree";
+			await fx.orchestrator.updateSettings(fx.plugin.settings);
+			expect(update).not.toHaveBeenCalled();
+		} finally { await fx.dispose(); }
+	});
+	it("retries invalidation after a rebuild fails instead of accepting a stale snapshot", async () => {
+		const fx = await buildOrchestrator();
+		try {
+			const update = jest.spyOn(fx.orchestrator, "onSettingsFieldsChanged").mockRejectedValueOnce(new Error("disk failure")).mockResolvedValueOnce();
+			fx.plugin.settings.preferMetadataFormat = "dataview";
+			await expect(fx.orchestrator.updateSettings(fx.plugin.settings)).rejects.toThrow("disk failure");
+			await fx.orchestrator.updateSettings(fx.plugin.settings);
+			expect(update).toHaveBeenCalledTimes(2);
+		} finally { await fx.dispose(); }
+	});
+});
+
+
+describe("source metadata invalidation", () => {
+	it("clears file caches before parsing a metadata update", async () => {
+		const fx = await buildOrchestrator({ files: { "a.md": "- [ ] Read" } });
+		try {
+			const flow: any = fx.orchestrator; flow.subscribeToEvents();
+			const events: string[] = [];
+			jest.spyOn(flow.projectResolver, "clearCache").mockImplementation(() => { events.push("project"); });
+			jest.spyOn(flow.augmentor, "clearCache").mockImplementation(() => { events.push("dates"); });
+			jest.spyOn(flow.storage, "clearFile").mockImplementation(async () => { events.push("storage"); });
+			jest.spyOn(flow, "processFile").mockImplementation(async () => { events.push("parse"); });
+			fx.app.workspace.trigger("task-genius:file-updated", { path: "a.md", reason: "metadata" });
+			await Promise.resolve(); await Promise.resolve();
+			expect(events).toEqual(["project", "dates", "storage", "parse"]);
+		} finally { await fx.dispose(); }
+	});
+	it("cancels a delayed parse when the source file is deleted", async () => {
+		const fx = await buildOrchestrator();
+		try {
+			const flow: any = fx.orchestrator; flow.subscribeToEvents();
+			const timer = setTimeout(() => { throw new Error("Deleted file was reparsed"); }, 60000);
+			flow.processingQueue.set("a.md", timer);
+			fx.app.workspace.trigger("task-genius:file-updated", { path: "a.md", reason: "delete" });
+			await Promise.resolve();
+			expect(flow.processingQueue.has("a.md")).toBe(false);
+		} finally { await fx.dispose(); }
+	});
+});
+
+
+it("prunes file filters only when their configuration changes", async () => {
+	const fx = await buildOrchestrator();
+	try {
+		const flow: any = fx.orchestrator;
+		const prune = jest.spyOn(flow, "pruneByFilter").mockResolvedValue(undefined);
+		await fx.orchestrator.updateSettings(fx.plugin.settings);
+		expect(prune).not.toHaveBeenCalled();
+		fx.plugin.settings.fileFilter = { ...fx.plugin.settings.fileFilter, enabled: !fx.plugin.settings.fileFilter.enabled };
+		await fx.orchestrator.updateSettings(fx.plugin.settings);
+		expect(prune).toHaveBeenCalledTimes(1);
+	} finally { await fx.dispose(); }
+});

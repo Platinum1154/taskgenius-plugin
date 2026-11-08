@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 /**
  * McpServerManager - Manages the lifecycle of the MCP server
  */
@@ -88,7 +89,7 @@ export class McpServerManager {
 		const available = await this.isPortAvailable(this.config.port, this.config.host);
 		if (!available) {
 			new Notice(
-				`Port ${this.config.port} on ${this.config.host} is already in use. Please choose another port in MCP settings.`
+				translateUI("Port {{value0}} on {{value1}} is already in use. Please choose another port in MCP settings.", { interpolation: { value0: String(this.config.port), value1: String(this.config.host) } })
 			);
 			console.warn(
 				`MCP Server port conflict detected on ${this.config.host}:${this.config.port}`
@@ -102,17 +103,17 @@ export class McpServerManager {
 			this.autoRestartAttempts = 0;
 			const status = this.server.getStatus();
 			new Notice(
-				`MCP Server started on ${this.config.host}:${status.port}`
+				translateUI("MCP Server started on {{value0}}:{{value1}}", { interpolation: { value0: String(this.config.host), value1: String(status.port) } })
 			);
 		} catch (error: any) {
 			console.error("Failed to start MCP Server:", error);
 			if (error?.code === "EADDRINUSE" || /EADDRINUSE/.test(error?.message || "")) {
 				new Notice(
-					`Port ${this.config.port} on ${this.config.host} is already in use. Please change the port in settings.`
+					translateUI("Port {{value0}} on {{value1}} is already in use. Please change the port in settings.", { interpolation: { value0: String(this.config.port), value1: String(this.config.host) } })
 				);
 				return;
 			}
-			new Notice(`Failed to start MCP Server: ${error.message}`);
+			new Notice(translateUI("Failed to start MCP Server: {{value0}}", { interpolation: { value0: String(error.message) } }));
 
 			// Auto-restart logic for transient errors only
 			if (this.autoRestartAttempts < this.maxAutoRestartAttempts) {
@@ -133,10 +134,10 @@ export class McpServerManager {
 		try {
 			await this.server.stop();
 			this.server = undefined;
-			new Notice("MCP Server stopped");
+			new Notice(translateUI("MCP Server stopped"));
 		} catch (error: any) {
 			console.error("Failed to stop MCP Server:", error);
-			new Notice(`Failed to stop MCP Server: ${error.message}`);
+			new Notice(translateUI("Failed to stop MCP Server: {{value0}}", { interpolation: { value0: String(error.message) } }));
 		}
 	}
 
@@ -192,7 +193,7 @@ export class McpServerManager {
 			const available = await this.isPortAvailable(desiredPort, desiredHost);
 			if (!available) {
 				new Notice(
-					`Port ${desiredHost}:${desiredPort} is already in use. Please choose another port.`
+					translateUI("Port {{value0}}:{{value1}} is already in use. Please choose another port.", { interpolation: { value0: String(desiredHost), value1: String(desiredPort) } })
 				);
 				throw new Error("Port in use");
 			}

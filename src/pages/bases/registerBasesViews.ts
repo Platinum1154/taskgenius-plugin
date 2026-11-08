@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { ViewOption } from 'obsidian';
 import { TaskBasesView } from './TaskBasesView';
 import TaskProgressBarPlugin from '../../index';
@@ -23,77 +24,77 @@ const TASK_GENIUS_BASES_VIEWS: TaskGeniusBasesViewType[] = [
 		name: 'Inbox (Task Genius)',
 		icon: 'lucide-inbox',
 		defaultViewMode: 'inbox',
-		description: 'View and manage tasks in inbox mode'
+		description: translateUI("View and manage tasks in inbox mode")
 	},
 	{
 		id: 'task-genius-forecast',
 		name: 'Forecast (Task Genius)',
 		icon: 'lucide-calendar-days',
 		defaultViewMode: 'forecast',
-		description: 'View tasks in forecast timeline'
+		description: translateUI("View tasks in forecast timeline")
 	},
 	{
 		id: 'task-genius-projects',
 		name: 'Projects (Task Genius)',
 		icon: 'lucide-folder-tree',
 		defaultViewMode: 'projects',
-		description: 'Organize tasks by projects'
+		description: translateUI("Organize tasks by projects")
 	},
 	{
 		id: 'task-genius-tags',
 		name: 'Tags (Task Genius)',
 		icon: 'lucide-tags',
 		defaultViewMode: 'tags',
-		description: 'Browse tasks by tags'
+		description: translateUI("Browse tasks by tags")
 	},
 	{
 		id: 'task-genius-calendar',
 		name: 'Calendar (Task Genius)',
 		icon: 'lucide-calendar',
 		defaultViewMode: 'calendar',
-		description: 'View tasks in calendar layout'
+		description: translateUI("View tasks in calendar layout")
 	},
 	{
 		id: 'task-genius-kanban',
 		name: 'Kanban (Task Genius)',
 		icon: 'lucide-columns-3',
 		defaultViewMode: 'kanban',
-		description: 'Manage tasks in kanban board'
+		description: translateUI("Manage tasks in kanban board")
 	},
 	{
 		id: 'task-genius-gantt',
 		name: 'Gantt (Task Genius)',
 		icon: 'lucide-gantt-chart-square',
 		defaultViewMode: 'gantt',
-		description: 'View tasks in Gantt chart'
+		description: translateUI("View tasks in Gantt chart")
 	},
 	{
 		id: 'task-genius-review',
 		name: 'Review (Task Genius)',
 		icon: 'lucide-list-checks',
 		defaultViewMode: 'review',
-		description: 'Review and process tasks'
+		description: translateUI("Review and process tasks")
 	},
 	{
 		id: 'task-genius-habits',
 		name: 'Habits (Task Genius)',
 		icon: 'lucide-target',
 		defaultViewMode: 'habit',
-		description: 'Track habits and recurring tasks'
+		description: translateUI("Track habits and recurring tasks")
 	},
 	{
 		id: 'task-genius-flagged',
 		name: 'Flagged (Task Genius)',
 		icon: 'lucide-flag',
 		defaultViewMode: 'flagged',
-		description: 'View high-priority flagged tasks'
+		description: translateUI("View high-priority flagged tasks")
 	},
 	{
 		id: 'task-genius-quadrant',
 		name: 'Quadrant (Task Genius)',
 		icon: 'lucide-grid',
 		defaultViewMode: 'quadrant',
-		description: 'Organize tasks using the Eisenhower Matrix'
+		description: translateUI("Organize tasks using the Eisenhower Matrix")
 	}
 ];
 
@@ -121,7 +122,7 @@ function createViewOptions(viewType: TaskGeniusBasesViewType): () => ViewOption[
 				displayName: 'View Type',
 				type: 'text',
 				key: '__viewType',
-				placeholder: `This is a ${viewType.name} view`,
+				placeholder: translateUI("This is a {{value0}} view", { interpolation: { value0: String(viewType.name) } }),
 				default: viewType.name,
 				readonly: true,
 			} as any);

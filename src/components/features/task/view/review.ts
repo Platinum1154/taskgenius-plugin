@@ -699,9 +699,7 @@ export class ReviewComponent extends Component {
 				const hiddenTasks =
 					allProjectTasks.length - filteredTasks.length;
 				const filterText = filterInfo.createSpan({
-					text: t(
-						`Showing new and in-progress tasks only. ${hiddenTasks} completed tasks from previous reviews are hidden.`
-					),
+					text: t("Showing new and in-progress tasks only. {{value0}} completed tasks from previous reviews are hidden.", { interpolation: { value0: String(hiddenTasks) } }),
 				});
 
 				// Add toggle link
@@ -804,9 +802,7 @@ export class ReviewComponent extends Component {
 					cls: "review-filter-info",
 				});
 				filterInfo.createSpan({
-					text: t(
-						`Showing new and in-progress tasks only. ${hiddenTasks} completed tasks from previous reviews are hidden.`
-					),
+					text: t("Showing new and in-progress tasks only. {{value0}} completed tasks from previous reviews are hidden.", { interpolation: { value0: String(hiddenTasks) } }),
 				});
 				const toggleLink = filterInfo.createSpan({
 					cls: "review-filter-toggle",
@@ -1014,9 +1010,7 @@ export class ReviewComponent extends Component {
 
 			// Show notice
 			new Notice(
-				t(
-					`${projectName} marked as reviewed with ${taskIds.length} tasks`
-				)
+				t("{{value0}} marked as reviewed with {{value1}} tasks", { interpolation: { value0: String(projectName), value1: String(taskIds.length) } })
 			);
 
 			// Update UI - need to refresh task list since we'll now filter out reviewed tasks
@@ -1040,9 +1034,7 @@ export class ReviewComponent extends Component {
 
 			// Show notice
 			new Notice(
-				t(
-					`${projectName} marked as reviewed with ${taskIds.length} tasks`
-				)
+				t("{{value0}} marked as reviewed with {{value1}} tasks", { interpolation: { value0: String(projectName), value1: String(taskIds.length) } })
 			);
 
 			// Update UI

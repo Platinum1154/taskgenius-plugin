@@ -1,8 +1,9 @@
+import { t as translateUI } from "@/translations/helper";
 import { Modal, ButtonComponent, ExtraButtonComponent } from "obsidian";
 import TaskProgressBarPlugin from "@/index";
 import { McpLogEntry } from "@/mcp/McpServer";
 import "@/styles/modal.scss";
-import { formatDate } from "@/utils/date/date-formatter";
+import { formatInterfaceDate as formatDate } from "@/utils/date/interface-date";
 
 /**
  * Modal for displaying MCP server logs
@@ -22,7 +23,7 @@ export class McpLogModal extends Modal {
 	}
 
 	onOpen() {
-		this.titleEl.setText("MCP Server Logs");
+		this.titleEl.setText(translateUI("MCP Server Logs"));
 		this.modalEl.addClass("mcp-log-modal");
 
 		// Header section with search and clear
@@ -34,14 +35,14 @@ export class McpLogModal extends Modal {
 		});
 		this.searchInput = searchContainer.createEl("input", {
 			type: "text",
-			placeholder: "Search logs...",
+			placeholder: translateUI("Search logs..."),
 			cls: "mcp-log-search-input",
 		});
 		this.searchInput.addEventListener("input", () => this.filterLogs());
 
 		// Clear logs button
 		new ButtonComponent(headerEl)
-			.setButtonText("Clear Logs")
+			.setButtonText(translateUI("Clear Logs"))
 			.setIcon("trash")
 			.setWarning()
 			.onClick(() => {
@@ -68,7 +69,7 @@ export class McpLogModal extends Modal {
 			cls: "modal-button-container",
 		});
 
-		new ButtonComponent(footerEl).setButtonText("Refresh").onClick(() => {
+		new ButtonComponent(footerEl).setButtonText(translateUI("Refresh")).onClick(() => {
 			if (this.plugin.mcpServerManager?.getServer()) {
 				this.logs =
 					this.plugin.mcpServerManager.getServer()?.getLogs() || [];
@@ -76,7 +77,7 @@ export class McpLogModal extends Modal {
 			}
 		});
 
-		new ButtonComponent(footerEl).setButtonText("Close").onClick(() => {
+		new ButtonComponent(footerEl).setButtonText(translateUI("Close")).onClick(() => {
 			this.close();
 		});
 	}
@@ -107,7 +108,7 @@ export class McpLogModal extends Modal {
 
 		const statsText = container.createDiv({ cls: "mcp-log-stats-text" });
 		statsText.setText(
-			`Total: ${totalLogs} | Success: ${successCount} | Errors: ${errorCount}`
+			translateUI("Total: {{value0}} | Success: {{value1}} | Errors: {{value2}}", { interpolation: { value0: String(totalLogs), value1: String(successCount), value2: String(errorCount) } })
 		);
 	}
 
@@ -151,7 +152,7 @@ export class McpLogModal extends Modal {
 
 			// Duration
 			const duration = headerRow.createDiv({ cls: "mcp-log-duration" });
-			duration.setText(`${log.duration}ms`);
+			duration.setText(translateUI("{{value0}}ms", { interpolation: { value0: String(log.duration) } }));
 
 			// Session ID (if available)
 			if (log.sessionId) {
@@ -184,7 +185,7 @@ export class McpLogModal extends Modal {
 				});
 				argsSection.createEl("div", {
 					cls: "mcp-log-section-title",
-					text: "Arguments:",
+					text: translateUI("Arguments:"),
 				});
 				const argsContent = argsSection.createEl("pre", {
 					cls: "mcp-log-section-content",
@@ -199,7 +200,7 @@ export class McpLogModal extends Modal {
 				});
 				errorSection.createEl("div", {
 					cls: "mcp-log-section-title mcp-log-error-title",
-					text: "Error:",
+					text: translateUI("Error:"),
 				});
 				const errorContent = errorSection.createEl("pre", {
 					cls: "mcp-log-section-content mcp-log-error-content",
@@ -211,13 +212,13 @@ export class McpLogModal extends Modal {
 				});
 				const resultTitle = resultSection.createEl("div", {
 					cls: "mcp-log-section-title",
-					text: "Result:",
+					text: translateUI("Result:"),
 				});
 
 				if (log.truncated) {
 					resultTitle.createEl("span", {
 						cls: "mcp-log-truncated-badge",
-						text: " (truncated)",
+						text: translateUI(" (truncated)"),
 					});
 				}
 

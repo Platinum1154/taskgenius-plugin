@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	App,
 	TFile,
@@ -191,17 +192,17 @@ export class ActionTypeSuggest extends AbstractInputSuggest<string> {
 	private getActionDescription(actionType: string): string {
 		switch (actionType) {
 			case "delete":
-				return "Remove the completed task from the file";
+				return translateUI("Remove the completed task from the file");
 			case "keep":
-				return "Keep the completed task in place";
+				return translateUI("Keep the completed task in place");
 			case "archive":
-				return "Move the completed task to an archive file";
+				return translateUI("Move the completed task to an archive file");
 			case "move:":
-				return "Move the completed task to another file";
+				return translateUI("Move the completed task to another file");
 			case "complete:":
-				return "Mark related tasks as completed";
+				return translateUI("Mark related tasks as completed");
 			case "duplicate":
-				return "Create a copy of the completed task";
+				return translateUI("Create a copy of the completed task");
 			default:
 				return "";
 		}
@@ -227,7 +228,7 @@ export class ActionTypeSuggest extends AbstractInputSuggest<string> {
 export class FileSelectionModal extends FuzzySuggestModal<TFile> {
 	constructor(app: App, private onChoose: (file: TFile) => void) {
 		super(app);
-		this.setPlaceholder("Type to search for files...");
+		this.setPlaceholder(translateUI("Type to search for files..."));
 	}
 
 	getItems(): TFile[] {

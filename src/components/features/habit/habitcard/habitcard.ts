@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Component } from "obsidian";
 import {
 	DailyHabitProps,
@@ -71,7 +72,7 @@ export class HabitCard extends Component {
 		progressText.setText(`${value}/${max}`);
 		progressContainer.setAttribute(
 			"aria-label",
-			`Progress: ${value} out of ${max}`
+			translateUI("Progress: {{value0}} out of {{value1}}", { interpolation: { value0: String(value), value1: String(max) } })
 		);
 
 		// Mark as filled when reaching or exceeding the goal

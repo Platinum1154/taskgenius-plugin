@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	ItemView,
 	WorkspaceLeaf,
@@ -891,7 +892,7 @@ export class TimelineSidebarView extends ItemView {
 		timeEl.addClass("timeline-event-time-group");
 
 		const countEl = groupHeaderEl.createDiv("timeline-time-group-count");
-		countEl.setText(`${events.length} events`);
+		countEl.setText(translateUI("{{value0}} events", { interpolation: { value0: String(events.length) } }));
 
 		// Events in the group
 		const groupEventsEl = groupEl.createDiv("timeline-time-group-events");
@@ -1006,10 +1007,10 @@ export class TimelineSidebarView extends ItemView {
 
 		const sectionHeaderEl = dateOnlySection.createDiv("timeline-date-only-header");
 		const headerTimeEl = sectionHeaderEl.createDiv("timeline-event-time timeline-event-time-date-only");
-		headerTimeEl.setText("All day");
+		headerTimeEl.setText(translateUI("All day"));
 
 		const headerTextEl = sectionHeaderEl.createDiv("timeline-date-only-title");
-		headerTextEl.setText(`${events.length} all-day event${events.length > 1 ? 's' : ''}`);
+		headerTextEl.setText(translateUI("{{value0}} all-day event{{value1}}", { interpolation: { value0: String(events.length), value1: String(events.length > 1 ? 's' : '') } }));
 
 		// Render each date-only event (hide individual time labels)
 		events.forEach((event) => {

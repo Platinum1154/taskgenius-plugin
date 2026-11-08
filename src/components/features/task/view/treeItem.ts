@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	App,
 	Component,
@@ -12,7 +13,7 @@ import { Task } from "@/types/task";
 import { MarkdownRendererComponent } from "@/components/ui/renderers/MarkdownRenderer";
 import { createTaskCheckbox } from "./details";
 import { getViewSettingOrDefault, ViewMode } from "@/common/setting-definition";
-import { getRelativeTimeString } from "@/utils/date/date-formatter";
+import { getInterfaceRelativeTimeString as getRelativeTimeString, getInterfaceLocale } from "@/utils/date/interface-date";
 import { t } from "@/translations/helper";
 import TaskProgressBarPlugin from "@/index";
 import { InlineEditor, InlineEditorOptions } from "./InlineEditor";
@@ -654,16 +655,16 @@ export class TaskTreeItemComponent extends Component {
 				cssClass = "task-overdue";
 			} else if (date.getTime() === today.getTime()) {
 				dateText = this.plugin.settings?.useRelativeTimeForDate
-					? getRelativeTimeString(date) || "Today"
-					: "Today";
+					? getRelativeTimeString(date) || t("Today")
+					: t("Today");
 				cssClass = "task-due-today";
 			} else if (date.getTime() === tomorrow.getTime()) {
 				dateText = this.plugin.settings?.useRelativeTimeForDate
-					? getRelativeTimeString(date) || "Tomorrow"
-					: "Tomorrow";
+					? getRelativeTimeString(date) || t("Tomorrow")
+					: t("Tomorrow");
 				cssClass = "task-due-tomorrow";
 			} else {
-				dateText = date.toLocaleDateString("en-US", {
+				dateText = date.toLocaleDateString(getInterfaceLocale(), {
 					year: "numeric",
 					month: "long",
 					day: "numeric",
@@ -672,7 +673,7 @@ export class TaskTreeItemComponent extends Component {
 		} else {
 			dateText = this.plugin.settings?.useRelativeTimeForDate
 				? getRelativeTimeString(date)
-				: date.toLocaleDateString("en-US", {
+				: date.toLocaleDateString(getInterfaceLocale(), {
 						year: "numeric",
 						month: "long",
 						day: "numeric",
@@ -903,7 +904,7 @@ export class TaskTreeItemComponent extends Component {
 		// Create the add metadata button
 		const addBtn = addButtonContainer.createEl("button", {
 			cls: "add-metadata-btn",
-			attr: { "aria-label": "Add metadata" },
+			attr: { "aria-label": translateUI("Add metadata") },
 		});
 		setIcon(addBtn, "plus");
 
@@ -1038,19 +1039,19 @@ export class TaskTreeItemComponent extends Component {
 		const menu = new Menu();
 
 		const availableFields = [
-			{ key: "project", label: "Project", icon: "folder" },
-			{ key: "tags", label: "Tags", icon: "tag" },
-			{ key: "context", label: "Context", icon: "at-sign" },
-			{ key: "dueDate", label: "Due Date", icon: "calendar" },
-			{ key: "startDate", label: "Start Date", icon: "play" },
-			{ key: "scheduledDate", label: "Scheduled Date", icon: "clock" },
-			{ key: "cancelledDate", label: "Cancelled Date", icon: "x" },
-			{ key: "completedDate", label: "Completed Date", icon: "check" },
-			{ key: "priority", label: "Priority", icon: "alert-triangle" },
-			{ key: "recurrence", label: "Recurrence", icon: "repeat" },
-			{ key: "onCompletion", label: "On Completion", icon: "flag" },
-			{ key: "dependsOn", label: "Depends On", icon: "link" },
-			{ key: "id", label: "Task ID", icon: "hash" },
+			{ key: "project", label: translateUI("Project"), icon: "folder" },
+			{ key: "tags", label: translateUI("Tags"), icon: "tag" },
+			{ key: "context", label: translateUI("Context"), icon: "at-sign" },
+			{ key: "dueDate", label: translateUI("Due Date"), icon: "calendar" },
+			{ key: "startDate", label: translateUI("Start Date"), icon: "play" },
+			{ key: "scheduledDate", label: translateUI("Scheduled Date"), icon: "clock" },
+			{ key: "cancelledDate", label: translateUI("Cancelled Date"), icon: "x" },
+			{ key: "completedDate", label: translateUI("Completed Date"), icon: "check" },
+			{ key: "priority", label: translateUI("Priority"), icon: "alert-triangle" },
+			{ key: "recurrence", label: translateUI("Recurrence"), icon: "repeat" },
+			{ key: "onCompletion", label: translateUI("On Completion"), icon: "flag" },
+			{ key: "dependsOn", label: translateUI("Depends On"), icon: "link" },
+			{ key: "id", label: translateUI("Task ID"), icon: "hash" },
 		];
 
 		// Filter out fields that already have values
@@ -1097,7 +1098,7 @@ export class TaskTreeItemComponent extends Component {
 		if (fieldsToShow.length === 0) {
 			menu.addItem((item) => {
 				item.setTitle(
-					"All metadata fields are already set"
+					translateUI("All metadata fields are already set")
 				).setDisabled(true);
 			});
 		} else {

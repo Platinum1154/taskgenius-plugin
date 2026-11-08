@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 /**
  * Simple rebuild progress tracker using Obsidian's Notice component
  */
@@ -26,7 +27,7 @@ export class RebuildProgressManager {
 		// Create persistent notice (duration: 0 means it won't auto-hide)
 		const reasonText = reason ? ` (${reason})` : "";
 		this.notice = new Notice(
-			`Task Genius: Starting rebuild${reasonText}...`,
+			translateUI("Task Genius: Starting rebuild{{value0}}...", { interpolation: { value0: String(reasonText) } }),
 			0
 		);
 	}

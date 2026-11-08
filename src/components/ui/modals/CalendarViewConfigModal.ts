@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	App,
 	Modal,
@@ -22,13 +23,13 @@ import { attachIconMenu } from "@/components/ui/menus/IconMenu";
  * Days of the week for custom day filter
  */
 const WEEKDAYS = [
-	{ value: 0, label: "Sunday", short: "Sun" },
-	{ value: 1, label: "Monday", short: "Mon" },
-	{ value: 2, label: "Tuesday", short: "Tue" },
-	{ value: 3, label: "Wednesday", short: "Wed" },
-	{ value: 4, label: "Thursday", short: "Thu" },
-	{ value: 5, label: "Friday", short: "Fri" },
-	{ value: 6, label: "Saturday", short: "Sat" },
+	{ value: 0, label: translateUI("Sunday"), short: "Sun" },
+	{ value: 1, label: translateUI("Monday"), short: "Mon" },
+	{ value: 2, label: translateUI("Tuesday"), short: "Tue" },
+	{ value: 3, label: translateUI("Wednesday"), short: "Wed" },
+	{ value: 4, label: translateUI("Thursday"), short: "Thu" },
+	{ value: 5, label: translateUI("Friday"), short: "Fri" },
+	{ value: 6, label: translateUI("Saturday"), short: "Sat" },
 ];
 
 /**
@@ -532,7 +533,7 @@ export class CalendarViewConfigModal extends Modal {
 				.setName(t("Day Header Format"))
 				.setDesc(t("Format for day headers (e.g., dddd, MMMM D)"))
 				.addText((text) => {
-					text.setPlaceholder("dddd, MMMM D")
+					text.setPlaceholder(translateUI("dddd, MMMM D"))
 						.setValue(
 							(this.view.calendarConfig as any).dayHeaderFormat ??
 								"",
@@ -565,7 +566,7 @@ export class CalendarViewConfigModal extends Modal {
 			.setName(t("Month Header Format"))
 			.setDesc(t("Format for month view header (e.g., yyyy M)"))
 			.addText((text) => {
-				text.setPlaceholder("yyyy M")
+				text.setPlaceholder(translateUI("yyyy M"))
 					.setValue(
 						this.view.calendarConfig.dateFormats?.monthHeader ?? "",
 					)

@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { App, Component, Notice, debounce } from "obsidian";
 import TaskProgressBarPlugin from "@/index";
 import { RootFilterState } from "@/components/features/task/filter/ViewTaskFilter";
@@ -225,7 +226,7 @@ export class FluentWorkspaceStateManager extends Component {
 						e,
 					);
 					new Notice(
-						"Failed to save workspace state. Recent changes may be lost.",
+						translateUI("Failed to save workspace state. Recent changes may be lost."),
 					);
 				});
 		},
@@ -302,7 +303,7 @@ export class FluentWorkspaceStateManager extends Component {
 		} catch (e) {
 			console.error("[FluentWorkspace] immediate save failed", e);
 			new Notice(
-				"Failed to save workspace state. Recent changes may be lost.",
+				translateUI("Failed to save workspace state. Recent changes may be lost."),
 			);
 		}
 	}

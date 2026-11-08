@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { App, Component, Notice, Platform, TFile, Menu } from "obsidian";
 import TaskProgressBarPlugin from "../index";
 import type { Task } from "../types/task";
@@ -708,7 +709,7 @@ export class DesktopIntegrationManager extends Component {
 				// Build an Obsidian menu that mirrors system tray quick actions using internal submenu API
 				const menu = new Menu();
 				menu.addItem((i: any) => {
-					i.setTitle("Open Task Genius")
+					i.setTitle(translateUI("Open Task Genius"))
 						.setIcon("task-genius")
 						.onClick(() => {
 							try {
@@ -718,7 +719,7 @@ export class DesktopIntegrationManager extends Component {
 				});
 				menu.addSeparator();
 				menu.addItem((i: any) => {
-					i.setTitle("Quick Capture...")
+					i.setTitle(translateUI("Quick Capture..."))
 						.setIcon("plus-circle")
 						.onClick(() => {
 							this.openQuickCaptureWindow();
@@ -745,20 +746,20 @@ export class DesktopIntegrationManager extends Component {
 						if (submenu) {
 							submenu.addItem((ii: any) =>
 								ii
-									.setTitle("Edit in file")
+									.setTitle(translateUI("Edit in file"))
 									.setIcon("file-pen")
 									.onClick(() => this.openTask(t))
 							);
 							submenu.addItem((ii: any) =>
 								ii
-									.setTitle("Complete")
+									.setTitle(translateUI("Complete"))
 									.setIcon("check")
 									.onClick(() => this.completeTask(t.id))
 							);
 							submenu.addSeparator();
 							submenu.addItem((ii: any) =>
 								ii
-									.setTitle("Snooze 1d")
+									.setTitle(translateUI("Snooze 1d"))
 									.setIcon("calendar")
 									.onClick(() =>
 										this.postponeTask(
@@ -769,7 +770,7 @@ export class DesktopIntegrationManager extends Component {
 							);
 							submenu.addItem((ii: any) =>
 								ii
-									.setTitle("Snooze 2d")
+									.setTitle(translateUI("Snooze 2d"))
 									.setIcon("calendar")
 									.onClick(() =>
 										this.postponeTask(
@@ -780,7 +781,7 @@ export class DesktopIntegrationManager extends Component {
 							);
 							submenu.addItem((ii: any) =>
 								ii
-									.setTitle("Snooze 3d")
+									.setTitle(translateUI("Snooze 3d"))
 									.setIcon("calendar")
 									.onClick(() =>
 										this.postponeTask(
@@ -791,7 +792,7 @@ export class DesktopIntegrationManager extends Component {
 							);
 							submenu.addItem((ii: any) =>
 								ii
-									.setTitle("Snooze 1w")
+									.setTitle(translateUI("Snooze 1w"))
 									.setIcon("calendar")
 									.onClick(() =>
 										this.postponeTask(
@@ -802,7 +803,7 @@ export class DesktopIntegrationManager extends Component {
 							);
 							submenu.addItem((ii: any) =>
 								ii
-									.setTitle("Custom date…")
+									.setTitle(translateUI("Custom date…"))
 									.setIcon("calendar-plus")
 									.onClick(() =>
 										this.openDatePickerForTask(t)
@@ -810,31 +811,31 @@ export class DesktopIntegrationManager extends Component {
 							);
 							submenu.addSeparator();
 							submenu.addItem((ii: any) => {
-								ii.setTitle("Priority").setIcon("flag");
+								ii.setTitle(translateUI("Priority")).setIcon("flag");
 								const p = ii.setSubmenu?.();
 								p?.addItem((pp: any) =>
 									pp
-										.setTitle("🔺 Highest")
+										.setTitle(translateUI("🔺 Highest"))
 										.onClick(() => this.setPriority(t, 5))
 								);
 								p?.addItem((pp: any) =>
 									pp
-										.setTitle("⏫ High")
+										.setTitle(translateUI("⏫ High"))
 										.onClick(() => this.setPriority(t, 4))
 								);
 								p?.addItem((pp: any) =>
 									pp
-										.setTitle("🔼 Medium")
+										.setTitle(translateUI("🔼 Medium"))
 										.onClick(() => this.setPriority(t, 3))
 								);
 								p?.addItem((pp: any) =>
 									pp
-										.setTitle("🔽 Low")
+										.setTitle(translateUI("🔽 Low"))
 										.onClick(() => this.setPriority(t, 2))
 								);
 								p?.addItem((pp: any) =>
 									pp
-										.setTitle("⏬️ Lowest")
+										.setTitle(translateUI("⏬️ Lowest"))
 										.onClick(() => this.setPriority(t, 1))
 								);
 							});
@@ -844,14 +845,14 @@ export class DesktopIntegrationManager extends Component {
 
 				if (topTasks.length === 0) {
 					menu.addItem((i: any) =>
-						i.setTitle("No due or upcoming").setDisabled(true)
+						i.setTitle(translateUI("No due or upcoming")).setDisabled(true)
 					);
 				}
 
 				menu.addSeparator();
 				menu.addItem((i: any) =>
 					i
-						.setTitle("Refresh")
+						.setTitle(translateUI("Refresh"))
 						.setIcon("refresh-ccw")
 						.onClick(() => {
 							this.updateStatusBar();
@@ -893,7 +894,7 @@ export class DesktopIntegrationManager extends Component {
 				return due >= from && due <= to;
 			});
 			if (!pending.length) {
-				new Notice("No tasks due today", 2000);
+				new Notice(translateUI("No tasks due today"), 2000);
 				return;
 			}
 			const body = this.formatDailySummaryBody(pending);

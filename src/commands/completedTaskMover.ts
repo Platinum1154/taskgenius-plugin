@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	App,
 	FuzzySuggestModal,
@@ -1060,7 +1061,7 @@ export class CompletedTaskFileSelectionModal extends FuzzySuggestModal<
 		this.currentFile = currentFile;
 		this.taskLines = taskLines;
 		this.moveMode = moveMode;
-		this.setPlaceholder("Select a file or type to create a new one");
+		this.setPlaceholder(translateUI("Select a file or type to create a new one"));
 	}
 
 	getItems(): (TFile | string)[] {
@@ -1232,7 +1233,7 @@ export class CompletedTaskBlockSelectionModal extends SuggestModal<{
 		this.taskLines = taskLines;
 		this.metadataCache = app.metadataCache;
 		this.moveMode = moveMode;
-		this.setPlaceholder("Select a block to insert after");
+		this.setPlaceholder(translateUI("Select a block to insert after"));
 	}
 
 	async getSuggestions(

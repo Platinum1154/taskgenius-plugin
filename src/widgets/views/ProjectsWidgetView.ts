@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Notice, TFile, debounce } from "obsidian";
 import type { WorkspaceLeaf } from "obsidian";
 import type { Task } from "@/types/task";
@@ -49,7 +50,7 @@ export class ProjectsWidgetView extends BaseWidgetView<ProjectsWidgetState> {
 	}
 
 	getDisplayText(): string {
-		return "Projects Widget";
+		return translateUI("Projects Widget");
 	}
 
 	protected isLinkable(): boolean {
@@ -94,7 +95,7 @@ export class ProjectsWidgetView extends BaseWidgetView<ProjectsWidgetState> {
 			this.projectContainerEl?.empty();
 			this.projectContainerEl?.createDiv({
 				cls: "tg-widget-empty",
-				text: "Dataflow is not available",
+				text: translateUI("Dataflow is not available"),
 			});
 			return;
 		}
@@ -158,7 +159,7 @@ export class ProjectsWidgetView extends BaseWidgetView<ProjectsWidgetState> {
 		if (this.projectStats.length === 0) {
 			this.projectContainerEl.createDiv({
 				cls: "tg-widget-empty",
-				text: "No projects",
+				text: translateUI("No projects"),
 			});
 			return;
 		}
@@ -196,7 +197,7 @@ export class ProjectsWidgetView extends BaseWidgetView<ProjectsWidgetState> {
 		if (project.overdue > 0) {
 			headerEl.createSpan({
 				cls: "tg-projects-card-overdue",
-				text: `${project.overdue} overdue`,
+				text: translateUI("{{value0}} overdue", { interpolation: { value0: String(project.overdue) } }),
 			});
 		}
 
@@ -223,7 +224,7 @@ export class ProjectsWidgetView extends BaseWidgetView<ProjectsWidgetState> {
 
 		statsEl.createSpan({
 			cls: "tg-projects-card-stat",
-			text: `${project.completed}/${project.total} tasks`,
+			text: translateUI("{{value0}}/{{value1}} tasks", { interpolation: { value0: String(project.completed), value1: String(project.total) } }),
 		});
 
 		statsEl.createSpan({

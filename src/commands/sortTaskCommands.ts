@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { EditorView } from "@codemirror/view";
 import { Notice } from "obsidian";
 import { parseTaskLine, MetadataFormat } from "../utils/task/task-operations";
@@ -733,13 +734,13 @@ export function sortTasksInDocument(
 	const app = plugin.app;
 	const activeFile = app.workspace.getActiveFile(); // Assume command runs on active file
 	if (!activeFile) {
-		new Notice("Sort Tasks: No active file found.");
+		new Notice(translateUI("Sort Tasks: No active file found."));
 		return null;
 	}
 	const filePath = activeFile.path; // Get file path
 	const cache = app.metadataCache.getFileCache(activeFile);
 	if (!cache) {
-		new Notice("Sort Tasks: Metadata cache not available.");
+		new Notice(translateUI("Sort Tasks: Metadata cache not available."));
 		return null;
 	}
 
@@ -813,7 +814,7 @@ export function sortTasksInDocument(
 	const toOffsetOriginal = doc.line(endLine + 1).to;
 	// Ensure offsets are valid
 	if (fromOffsetOriginal > toOffsetOriginal) {
-		new Notice(`Sort Tasks: Invalid range calculated for ${scopeMessage}.`);
+		new Notice(translateUI("Sort Tasks: Invalid range calculated for {{value0}}.", { interpolation: { value0: String(scopeMessage) } }));
 		return null;
 	}
 	const originalBlockText = doc.sliceString(

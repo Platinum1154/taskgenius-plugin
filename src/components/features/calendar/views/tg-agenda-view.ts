@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 /**
  * TGAgendaView - Agenda view extending @taskgenius/calendar BaseView
  *
@@ -57,7 +58,7 @@ export interface AgendaViewOptions {
 export class TGAgendaView<T = unknown> extends BaseView<T> {
 	static meta: ViewMeta = {
 		type: "agenda",
-		label: "Agenda",
+		label: translateUI("Agenda"),
 		shortLabel: "A",
 		order: 40,
 	};
@@ -222,9 +223,9 @@ export class TGAgendaView<T = unknown> extends BaseView<T> {
 	): void {
 		const emptyEl = container.createDiv("agenda-empty-state");
 		emptyEl.setText(
-			`No upcoming events from ${rangeStart.format(
+			translateUI("No upcoming events from {{value0}} to {{value1}}.", { interpolation: { value0: String(rangeStart.format(
 				"MMM D",
-			)} to ${rangeEnd.format("MMM D, YYYY")}.`,
+			)), value1: String(rangeEnd.format("MMM D, YYYY")) } }),
 		);
 	}
 
@@ -279,7 +280,7 @@ export class TGAgendaView<T = unknown> extends BaseView<T> {
 
 		if (events.length === 0) {
 			const emptyDay = eventsColumn.createDiv("agenda-empty-day");
-			emptyDay.setText("No events");
+			emptyDay.setText(translateUI("No events"));
 		} else {
 			const eventsList = eventsColumn.createDiv("agenda-events-list");
 			this.renderEvents(eventsList, events);

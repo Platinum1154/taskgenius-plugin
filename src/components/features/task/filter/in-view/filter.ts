@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Component, Notice, setIcon } from "obsidian";
 import { FilterDropdown } from "./filter-dropdown";
 import { FilterPill } from "./filter-pill";
@@ -220,7 +221,7 @@ export class FilterComponent extends Component {
 			console.log(
 				"No more filter categories available or options populated.",
 			);
-			new Notice("No more filter categories available.");
+			new Notice(translateUI("No more filter categories available."));
 			return;
 		}
 

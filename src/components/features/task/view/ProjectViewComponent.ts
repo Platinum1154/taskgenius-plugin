@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { App, setIcon } from "obsidian";
 import { Task } from "@/types/task";
 import { t } from "@/translations/helper";
@@ -72,7 +73,7 @@ export class ProjectViewComponent extends TwoColumnViewBase<string> {
 			const projectCount = this.projectTree
 				? this.projectTree.children.length
 				: this.allProjectsMap.size;
-			this.countEl.setText(`${projectCount} projects`);
+			this.countEl.setText(translateUI("{{value0}} projects", { interpolation: { value0: String(projectCount) } }));
 		}
 	}
 

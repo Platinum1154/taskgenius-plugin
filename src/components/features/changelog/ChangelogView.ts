@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { ItemView, MarkdownRenderer, WorkspaceLeaf } from "obsidian";
 import type TaskProgressBarPlugin from "@/index";
 import { getCachedChangelog } from "@/utils/changelog-cache";
@@ -109,13 +110,13 @@ export class ChangelogView extends ItemView {
 			});
 
 			metaEl.createSpan({
-				text: `Version ${this.content.version}`,
+				text: translateUI("Version {{value0}}", { interpolation: { value0: String(this.content.version) } }),
 			});
 
 			if (this.content.sourceUrl) {
 				metaEl.createSpan({ text: " • " });
 				metaEl.createEl("a", {
-					text: "View full changelog",
+					text: translateUI("View full changelog"),
 					href: "https://taskgenius.md/changelog",
 					attr: {
 						target: "_blank",
@@ -130,7 +131,7 @@ export class ChangelogView extends ItemView {
 		});
 
 		if (this.isLoading) {
-			bodyEl.createEl("p", { text: "Loading changelog..." });
+			bodyEl.createEl("p", { text: translateUI("Loading changelog...") });
 			return;
 		}
 
@@ -154,7 +155,7 @@ export class ChangelogView extends ItemView {
 		}
 
 		bodyEl.createEl("p", {
-			text: "No changelog information available.",
+			text: translateUI("No changelog information available."),
 		});
 	}
 }

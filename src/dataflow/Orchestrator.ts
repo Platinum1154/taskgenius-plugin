@@ -24,7 +24,7 @@ import { ConfigurableTaskParser } from "./core/ConfigurableTaskParser";
 import { MetadataParseMode } from "../types/TaskParserConfig";
 import { TimeParsingService } from "../services/time-parsing-service";
 import type { EnhancedTimeParsingConfig } from "../types/time-parsing";
-import { scopesForFields } from "./cache/scope-map";
+import { scopesForFields, SETTINGS_FIELD_TO_SCOPES } from "./cache/scope-map";
 
 /**
  * DataflowOrchestrator - Coordinates all dataflow components
@@ -65,6 +65,8 @@ export class DataflowOrchestrator {
 
 	// Track last processed sequence to avoid infinite loops
 	private lastProcessedSeq = 0;
+	private settingsSnapshot: Record<string, string>;
+	private settingsUpdateQueue: Promise<void> = Promise.resolve();
 
 	constructor(
 		private app: App,
@@ -73,6 +75,7 @@ export class DataflowOrchestrator {
 		private plugin: any, // Plugin instance for parser access
 		projectOptions?: Partial<ProjectConfigManagerOptions>,
 	) {
+		this.settingsSnapshot = this.snapshotCacheSettings(plugin.settings);
 		// Initialize components
 		this.queryAPI = new QueryAPI(app, vault, metadataCache);
 		this.repository = this.queryAPI.getRepository();
@@ -464,6 +467,10 @@ export class DataflowOrchestrator {
 				);
 
 				if (reason === "delete") {
+					const pending = this.processingQueue.get(path);
+					if (pending) clearTimeout(pending);
+					this.processingQueue.delete(path);
+					this.projectResolver.clearCache(path);
 					// Remove file from index
 					await this.repository.removeFile(path);
 				} else {
@@ -472,6 +479,11 @@ export class DataflowOrchestrator {
 						path,
 					) as TFile;
 					if (file) {
+						if (reason !== "error") {
+							this.projectResolver.clearCache(path);
+							this.augmentor.clearCache();
+							await this.storage.clearFile(path);
+						}
 						await this.processFile(file);
 					}
 				}
@@ -826,6 +838,9 @@ export class DataflowOrchestrator {
 				augmentedTasks = await this.augmentor.merge(augmentContext);
 			}
 
+			// A parse may have completed after the source was deleted.
+			if (!this.vault.getAbstractFileByPath(filePath)) return;
+
 			// Step 3: Update repository (index + storage + events)
 			// Generate a unique sequence for this operation
 			this.lastProcessedSeq = Seq.next();
@@ -852,7 +867,23 @@ export class DataflowOrchestrator {
 	/**
 	 * Update settings and propagate to components
 	 */
-	updateSettings(settings: any): void {
+	private snapshotCacheSettings(settings: any): Record<string, string> {
+		return Object.fromEntries([...Object.keys(SETTINGS_FIELD_TO_SCOPES), "fileFilter"].map(field => {
+			const value = field.split(".").reduce((current, key) => current?.[key], settings);
+			return [field, JSON.stringify({ value })];
+		}));
+	}
+
+	updateSettings(settings: any): Promise<void> {
+		// Settings are edited in place. Compare snapshots, and serialize rebuilds
+		// so a later change cannot be lost while an earlier rebuild is running.
+		this.settingsUpdateQueue = this.settingsUpdateQueue.catch(() => {}).then(() => this.applySettings(settings));
+		return this.settingsUpdateQueue;
+	}
+
+	private async applySettings(settings: any): Promise<void> {
+		const nextSnapshot = this.snapshotCacheSettings(settings);
+		const changedFields = Object.keys(SETTINGS_FIELD_TO_SCOPES).filter(field => nextSnapshot[field] !== this.settingsSnapshot[field]);
 		// Update worker processing setting
 		const enableWorkerProcessing =
 			settings?.fileSource?.performance?.enableWorkerProcessing ??
@@ -1007,7 +1038,7 @@ export class DataflowOrchestrator {
 			(this.repository as any).setFileFilterManager?.(
 				this.fileFilterManager,
 			);
-			fileFilterChanged = true;
+			fileFilterChanged = nextSnapshot.fileFilter !== this.settingsSnapshot.fileFilter;
 		}
 
 		if (fileFilterChanged) {
@@ -1035,6 +1066,12 @@ export class DataflowOrchestrator {
 			});
 			this.restoreByFilterDebounced?.();
 		}
+		if (changedFields.length) {
+			await this.onSettingsFieldsChanged(changedFields);
+		} else {
+			emit(this.app, Events.SETTINGS_CHANGED, { scopes: [], timestamp: Date.now() });
+		}
+		this.settingsSnapshot = nextSnapshot;
 	}
 
 	/**
@@ -1719,6 +1756,8 @@ export class DataflowOrchestrator {
 	 */
 	async rebuild(): Promise<void> {
 		try {
+			this.projectResolver.clearCache();
+			this.augmentor.clearCache();
 			// Clear all data
 			await this.repository.clear();
 
@@ -1739,6 +1778,7 @@ export class DataflowOrchestrator {
 
 			// Persist the rebuilt index
 			await this.repository.persist();
+			await this.queryAPI.refreshCache();
 
 			// Emit ready event
 			emit(this.app, Events.CACHE_READY, {
@@ -1786,6 +1826,7 @@ export class DataflowOrchestrator {
 			await this.storage.clearNamespace("augmented");
 			await this.storage.clearNamespace("project");
 			this.projectResolver.clearCache();
+			this.augmentor.clearCache();
 		}
 
 		if (scopes.includes("index")) {

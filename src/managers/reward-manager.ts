@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import TaskProgressBarPlugin from "../index";
 import { RewardItem, RewardSettings } from "../common/setting-definition";
 import { TFile, App, Notice, Component } from "obsidian";
@@ -195,7 +196,7 @@ export class RewardManager extends Component {
 				new Notice(`🎉 ${reward.name}!`); // Simple confirmation
 			} else {
 				// User skipped
-				new Notice(`Skipped reward: ${reward.name}`);
+				new Notice(translateUI("Skipped reward: {{value0}}", { interpolation: { value0: String(reward.name) } }));
 			}
 		}).open();
 	}

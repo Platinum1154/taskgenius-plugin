@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Setting, Modal } from "obsidian";
 import { t } from "@/translations/helper";
 import { TaskProgressBarSettingTab } from "@/setting";
@@ -136,7 +137,7 @@ export function renderWorkflowSettingsTab(
 				text: "   ",
 			});
 			const span = fragment.createEl("span", {
-				text: "HH:mm:ss",
+				text: translateUI("HH:mm:ss"),
 			});
 			fragment.createEl("span", {
 				text: ".   ",
@@ -297,9 +298,7 @@ export function renderWorkflowSettingsTab(
 
 						const content = modal.contentEl.createDiv();
 						content.setText(
-							t(
-								`Are you sure you want to delete the '${workflow.name}' workflow?`
-							)
+							t("Are you sure you want to delete the '{{value0}}' workflow?", { interpolation: { value0: String(workflow.name) } })
 						);
 
 						const buttonContainer = modal.contentEl.createDiv({

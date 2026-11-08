@@ -1,3 +1,5 @@
+import { getInterfaceLocale } from "@/utils/date/interface-date";
+import { t as translateUI } from "@/translations/helper";
 import { Notice, TFile, setIcon, App } from "obsidian";
 import type { Task } from "@/types/task";
 import {
@@ -119,7 +121,7 @@ export class TasksWidgetRenderer extends BaseWidgetRenderer<TasksWidgetState> {
 
 		toolbar.createSpan({
 			cls: "tg-tasks-toolbar-label",
-			text: "Group by:",
+			text: translateUI("Group by:"),
 		});
 
 		const select = toolbar.createEl("select", {
@@ -127,13 +129,13 @@ export class TasksWidgetRenderer extends BaseWidgetRenderer<TasksWidgetState> {
 		});
 
 		const options: { value: TasksGroupByMode; label: string }[] = [
-			{ value: "none", label: "None" },
-			{ value: "tag", label: "Tag" },
-			{ value: "project", label: "Project" },
-			{ value: "priority", label: "Priority" },
-			{ value: "due", label: "Due Date" },
-			{ value: "status", label: "Status" },
-			{ value: "date", label: "Date" },
+			{ value: "none", label: translateUI("None") },
+			{ value: "tag", label: translateUI("Tag") },
+			{ value: "project", label: translateUI("Project") },
+			{ value: "priority", label: translateUI("Priority") },
+			{ value: "due", label: translateUI("Due Date") },
+			{ value: "status", label: translateUI("Status") },
+			{ value: "date", label: translateUI("Date") },
 		];
 
 		for (const opt of options) {
@@ -160,7 +162,7 @@ export class TasksWidgetRenderer extends BaseWidgetRenderer<TasksWidgetState> {
 			this.taskContainerEl?.empty();
 			this.taskContainerEl?.createDiv({
 				cls: "tg-widget-empty",
-				text: "Dataflow is not available",
+				text: translateUI("Dataflow is not available"),
 			});
 			return;
 		}
@@ -228,7 +230,7 @@ export class TasksWidgetRenderer extends BaseWidgetRenderer<TasksWidgetState> {
 		if (this.filteredTasks.length === 0) {
 			this.taskContainerEl.createDiv({
 				cls: "tg-widget-empty",
-				text: "No tasks",
+				text: translateUI("No tasks"),
 			});
 			return;
 		}
@@ -409,8 +411,8 @@ export class TasksWidgetRenderer extends BaseWidgetRenderer<TasksWidgetState> {
 		);
 
 		if (diffDays < 0) return "Overdue";
-		if (diffDays === 0) return "Today";
-		if (diffDays === 1) return "Tomorrow";
+		if (diffDays === 0) return translateUI("Today");
+		if (diffDays === 1) return translateUI("Tomorrow");
 		if (diffDays <= 7) return "This Week";
 		if (diffDays <= 14) return "Next Week";
 		return "Later";
@@ -466,9 +468,35 @@ export class TasksWidgetRenderer extends BaseWidgetRenderer<TasksWidgetState> {
 		});
 		setIcon(chevronEl, isCollapsed ? "chevron-right" : "chevron-down");
 
+		// Keep stable group keys for sorting/collapse state; translate only labels.
+		const builtInLabels: Record<string, string> = {
+			"Highest": translateUI("Highest"),
+			"High": translateUI("High"),
+			"Medium": translateUI("Medium"),
+			"Low": translateUI("Low"),
+			"Lowest": translateUI("Lowest"),
+			"No Priority": translateUI("No Priority"),
+			"Overdue": translateUI("Overdue"),
+			"Today": translateUI("Today"),
+			"Tomorrow": translateUI("Tomorrow"),
+			"This Week": translateUI("This Week"),
+			"Next Week": translateUI("Next Week"),
+			"Later": translateUI("Later"),
+			"No Due Date": translateUI("No Due Date"),
+			"In Progress": translateUI("In Progress"),
+			"Todo": translateUI("Todo"),
+			"Planned": translateUI("Planned"),
+			"Completed": translateUI("Completed"),
+			"Cancelled": translateUI("Cancelled"),
+			"Other": translateUI("Other"),
+		};
+		const groupLabel = ["priority", "due", "status"].includes(this.state.groupBy)
+			? builtInLabels[name] ?? name
+			: this.state.groupBy === "date" && name === "No Due Date"
+				? translateUI("No Due Date") : name;
 		headerEl.createSpan({
 			cls: "tg-tasks-group-title",
-			text: name,
+			text: groupLabel,
 		});
 
 		headerEl.createSpan({
@@ -553,13 +581,13 @@ export class TasksWidgetRenderer extends BaseWidgetRenderer<TasksWidgetState> {
 			(target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
 		);
 
-		if (diff === 0) return "Today";
-		if (diff === 1) return "Tomorrow";
-		if (diff === -1) return "Yesterday";
-		if (diff < -1) return `${Math.abs(diff)}d ago`;
-		if (diff < 7) return `In ${diff}d`;
+		if (diff === 0) return translateUI("Today");
+		if (diff === 1) return translateUI("Tomorrow");
+		if (diff === -1) return translateUI("Yesterday");
+		if (diff < -1) return translateUI("{{count}}d ago", { interpolation: { count: Math.abs(diff) } });
+		if (diff < 7) return translateUI("In {{count}}d", { interpolation: { count: diff } });
 
-		return date.toLocaleDateString(undefined, {
+		return date.toLocaleDateString(getInterfaceLocale(), {
 			month: "short",
 			day: "numeric",
 		});
@@ -587,7 +615,7 @@ export class TasksWidgetRenderer extends BaseWidgetRenderer<TasksWidgetState> {
 		completed: boolean,
 	): Promise<void> {
 		if (!this.plugin.writeAPI) {
-			new Notice("Write API not available");
+			new Notice(translateUI("Write API not available"));
 			return;
 		}
 

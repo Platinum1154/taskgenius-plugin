@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Modal, setIcon, Setting } from "obsidian";
 import { t } from "@/translations/helper";
 import { allStatusCollections } from "@/common/task-status";
@@ -132,7 +133,7 @@ export function renderTaskStatusSettingsTab(
 		)
 		.setHeading()
 		.addDropdown((dropdown) => {
-			dropdown.addOption("custom", "Custom");
+			dropdown.addOption("custom", translateUI("Custom"));
 			for (const statusCollection of allStatusCollections) {
 				dropdown.addOption(statusCollection, statusCollection);
 			}
@@ -147,11 +148,11 @@ export function renderTaskStatusSettingsTab(
 
 				// Confirm before applying the theme
 				const modal = new Modal(settingTab.app);
-				modal.titleEl.setText(`Apply ${value} Theme?`);
+				modal.titleEl.setText(translateUI("Apply {{value0}} Theme?", { interpolation: { value0: String(value) } }));
 
 				const content = modal.contentEl.createDiv();
 				content.setText(
-					`This will override your current checkbox status settings with the ${value} theme. Do you want to continue?`,
+					translateUI("This will override your current checkbox status settings with the {{value0}} theme. Do you want to continue?", { interpolation: { value0: String(value) } }),
 				);
 
 				const buttonContainer = modal.contentEl.createDiv({
@@ -364,45 +365,45 @@ export function renderTaskStatusSettingsTab(
 
 	// Configure Completed status
 	createStatusConfigButton("completed", {
-		title: "Completed",
+		title: translateUI("Completed"),
 		description:
-			"Finished tasks. Counts as 100% in progress bars. Common symbols: x, X",
+			translateUI("Finished tasks. Counts as 100% in progress bars. Common symbols: x, X"),
 		placeholder: "x",
 		icon: "completed",
 	});
 
 	// Configure In Progress status
 	createStatusConfigButton("inProgress", {
-		title: "In Progress",
+		title: translateUI("In Progress"),
 		description:
-			"Tasks actively being worked on. Shows as 'active' in progress tracking. Common symbols: /, >",
+			translateUI("Tasks actively being worked on. Shows as 'active' in progress tracking. Common symbols: /, >"),
 		placeholder: "/",
 		icon: "inProgress",
 	});
 
 	// Configure Planned status
 	createStatusConfigButton("planned", {
-		title: "Planned",
+		title: translateUI("Planned"),
 		description:
-			"Scheduled or waiting tasks. Often excluded from progress counts. Common symbols: ?, >",
+			translateUI("Scheduled or waiting tasks. Often excluded from progress counts. Common symbols: ?, >"),
 		placeholder: "?",
 		icon: "planned",
 	});
 
 	// Configure Abandoned status
 	createStatusConfigButton("abandoned", {
-		title: "Abandoned",
+		title: translateUI("Abandoned"),
 		description:
-			"Cancelled or irrelevant tasks. Excluded from active tracking. Common symbol: -",
+			translateUI("Cancelled or irrelevant tasks. Excluded from active tracking. Common symbol: -"),
 		placeholder: "-",
 		icon: "abandoned",
 	});
 
 	// Configure Not Started status (preserves empty spaces)
 	createStatusConfigButton("notStarted", {
-		title: "Not Started",
+		title: translateUI("Not Started"),
 		description:
-			"Pending tasks awaiting action. Default starting state. Common symbol: (space)",
+			translateUI("Pending tasks awaiting action. Default starting state. Common symbol: (space)"),
 		placeholder: " ",
 		icon: "notStarted",
 		preserveEmpty: true,
@@ -416,11 +417,11 @@ export function renderTaskStatusSettingsTab(
 			),
 		)
 		.addDropdown((dropdown) => {
-			dropdown.addOption("notStarted", "Not Started");
-			dropdown.addOption("abandoned", "Abandoned");
-			dropdown.addOption("planned", "Planned");
-			dropdown.addOption("completed", "Completed");
-			dropdown.addOption("inProgress", "In Progress");
+			dropdown.addOption("notStarted", translateUI("Not Started"));
+			dropdown.addOption("abandoned", translateUI("Abandoned"));
+			dropdown.addOption("planned", translateUI("Planned"));
+			dropdown.addOption("completed", translateUI("Completed"));
+			dropdown.addOption("inProgress", translateUI("In Progress"));
 			dropdown.setValue(
 				settingTab.plugin.settings.countOtherStatusesAs || "notStarted",
 			);
@@ -724,7 +725,7 @@ export function renderTaskStatusSettingsTab(
 				),
 			)
 			.addDropdown((dropdown) => {
-				dropdown.addOption("custom", "Custom");
+				dropdown.addOption("custom", translateUI("Custom"));
 				for (const statusCollection of allStatusCollections) {
 					dropdown.addOption(statusCollection, statusCollection);
 				}
@@ -739,13 +740,11 @@ export function renderTaskStatusSettingsTab(
 
 					// Confirm before applying the theme
 					const modal = new Modal(settingTab.app);
-					modal.titleEl.setText(`Add ${value} Theme as New Cycle?`);
+					modal.titleEl.setText(translateUI("Add {{value0}} Theme as New Cycle?", { interpolation: { value0: String(value) } }));
 
 					const content = modal.contentEl.createDiv();
 					content.setText(
-						t(
-							`This will add a new status cycle based on the ${value} theme.`,
-						),
+						t("This will add a new status cycle based on the {{value0}} theme.", { interpolation: { value0: String(value) } }),
 					);
 
 					const buttonContainer = modal.contentEl.createDiv({
@@ -801,7 +800,7 @@ export function renderTaskStatusSettingsTab(
 								const newStatusCycle: StatusCycle = {
 									id: `cycle-${Date.now()}`,
 									name: value,
-									description: t(`${value} theme workflow`),
+									description: t("{{value0}} theme workflow", { interpolation: { value0: String(value) } }),
 									priority:
 										settingTab.plugin.settings.statusCycles!
 											.length,

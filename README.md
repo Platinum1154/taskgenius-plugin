@@ -31,6 +31,16 @@ For detailed feature documentation, visit [taskgenius.md](https://taskgenius.md)
 
 ---
 
+## Interface language / 界面语言
+
+Choose **Follow Obsidian**, **English**, or **简体中文** in the Task Genius settings entry or **Interface** settings. English and Simplified Chinese translations are bundled, so they work without downloading a language pack. The settings page refreshes immediately; reopen existing task views to refresh labels created before the switch. This does not change Obsidian’s language or translate your own task names and notes.
+
+在 Task Genius 设置入口或「界面」设置中选择「跟随 Obsidian」、English 或简体中文。中英文翻译随插件提供，无需联网下载。设置页面会立即更新；已打开的任务视图请关闭后重新打开，以更新切换前创建的文字。此设置不会修改 Obsidian 的语言，也不会翻译你的任务名称和笔记。
+
+Contributors: run `pnpm check:i18n` to check English/Chinese key coverage and interpolation placeholders. The same check runs before the production build.
+
+---
+
 ## Installation
 
 ### Community Plugin (Recommended)

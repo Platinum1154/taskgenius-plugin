@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	App,
 	Component,
@@ -207,11 +208,9 @@ export class TaskRendererComponent extends Component {
 			// Add tooltip for milestone
 			group.setAttribute(
 				"title",
-				`${task.content}\nDue: ${
-					task.metadata.dueDate
+				translateUI("{{value0}}\nDue: {{value1}}", { interpolation: { value0: String(task.content), value1: String(task.metadata.dueDate
 						? new Date(task.metadata.dueDate).toLocaleDateString()
-						: "N/A"
-				}`
+						: "N/A") } })
 			);
 		} else if (preparedTask.width !== undefined && preparedTask.width > 0) {
 			// Render task bar
@@ -240,15 +239,11 @@ export class TaskRendererComponent extends Component {
 			// Add tooltip for bar
 			group.setAttribute(
 				"title",
-				`${task.content}\nStart: ${
-					task.metadata.startDate
+				translateUI("{{value0}}\nStart: {{value1}}\nDue: {{value2}}", { interpolation: { value0: String(task.content), value1: String(task.metadata.startDate
 						? new Date(task.metadata.startDate).toLocaleDateString()
-						: "N/A"
-				}\nDue: ${
-					task.metadata.dueDate
+						: "N/A"), value2: String(task.metadata.dueDate
 						? new Date(task.metadata.dueDate).toLocaleDateString()
-						: "N/A"
-				}`
+						: "N/A") } })
 			);
 
 			// --- Render Task Label ---

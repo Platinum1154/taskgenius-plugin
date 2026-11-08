@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Notice, TFile, WorkspaceLeaf, debounce } from "obsidian";
 import type { Task } from "@/types/task";
 import TaskProgressBarPlugin from "@/index";
@@ -26,7 +27,7 @@ export class ForecastWidgetView extends BaseWidgetView<ForecastWidgetState> {
 	}
 
 	getDisplayText(): string {
-		return "Forecast Widget";
+		return translateUI("Forecast Widget");
 	}
 
 	protected isLinkable(): boolean {
@@ -66,7 +67,7 @@ export class ForecastWidgetView extends BaseWidgetView<ForecastWidgetState> {
 			this.taskContainerEl.empty();
 			this.taskContainerEl.createDiv({
 				cls: "tg-widget-empty",
-				text: "Dataflow is not available",
+				text: translateUI("Dataflow is not available"),
 			});
 			return;
 		}
@@ -124,7 +125,7 @@ export class ForecastWidgetView extends BaseWidgetView<ForecastWidgetState> {
 		if (tasks.length === 0) {
 			sectionEl.createDiv({
 				cls: "tg-widget-section-empty",
-				text: "No tasks",
+				text: translateUI("No tasks"),
 			});
 			return;
 		}
@@ -156,7 +157,7 @@ export class ForecastWidgetView extends BaseWidgetView<ForecastWidgetState> {
 		completed: boolean,
 	): Promise<void> {
 		if (!this.plugin.writeAPI) {
-			new Notice("Write API not available");
+			new Notice(translateUI("Write API not available"));
 			return;
 		}
 

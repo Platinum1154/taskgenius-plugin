@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 /**
  * @deprecated This file is deprecated. Use @taskgenius/calendar's DayView instead.
  */
@@ -69,7 +70,7 @@ export class DayView extends CalendarViewComponent {
 		// 3. Render events in a simple list
 		if (dayEvents.length === 0) {
 			timelineEventsContainer.addClass("is-empty");
-			timelineEventsContainer.setText("(No events for this day)");
+			timelineEventsContainer.setText(translateUI("(No events for this day)"));
 		} else {
 			dayEvents.forEach((event) => {
 				// Remove layout finding logic

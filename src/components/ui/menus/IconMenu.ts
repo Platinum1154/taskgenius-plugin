@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { debounce, getIconIds, Notice, setIcon } from "obsidian";
 
 import { ButtonComponent } from "obsidian";
@@ -29,7 +30,7 @@ export const attachIconMenu = (
 	const showMenu = () => {
 		console.log("showMenu", availableIcons.length);
 		if (!availableIcons.length) {
-			new Notice("Icon list unavailable.");
+			new Notice(translateUI("Icon list unavailable."));
 			return;
 		}
 
@@ -39,7 +40,7 @@ export const attachIconMenu = (
 
 		let iconEls: Record<string, HTMLDivElement> = {};
 		const searchInput = menuRef.createEl("input", {
-			attr: { type: "text", placeholder: "Search icons..." },
+			attr: { type: "text", placeholder: translateUI("Search icons...") },
 			cls: "tg-menu-search",
 		});
 		win.setTimeout(() => searchInput.focus(), 50);
@@ -70,7 +71,7 @@ export const attachIconMenu = (
 			if (!iconsToRender.length && currentBatch === 0) {
 				iconList.empty();
 				iconList.createEl("p", {
-					text: "No matching icons found.",
+					text: translateUI("No matching icons found."),
 				});
 				return;
 			}

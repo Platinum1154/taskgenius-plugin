@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Setting, TextAreaComponent } from "obsidian";
 import { DEFAULT_SETTINGS } from "@/common/setting-definition";
 import { t } from "@/translations/helper";
@@ -471,7 +472,7 @@ function displayNumberToProgressbar(
 				);
 				previewEl.setText(`${t("Preview")}: ${renderedText}`);
 			} catch (error) {
-				previewEl.setText(`${t("Preview")}: Error`);
+				previewEl.setText(translateUI("{{value0}}: Error", { interpolation: { value0: String(t("Preview")) } }));
 				previewEl.addClass("expression-preview-error");
 			}
 
@@ -567,16 +568,16 @@ function addProgressRangesSettings(
 		new Setting(containerEl)
 			.setName(`${t("Range")} ${index + 1}: ${range.min}%-${range.max}%`)
 			.setDesc(
-				`${t("Use")} {{PROGRESS}} ${t(
+				translateUI("{{value0}} {{PROGRESS}} {{value1}}", { interpolation: { value0: String(t("Use")), value1: String(t(
 					"as a placeholder for the percentage value"
-				)}`
+				)) } })
 			)
 			.addText((text) =>
 				text
 					.setPlaceholder(
-						`${t("Template text with")} {{PROGRESS}} ${t(
+						translateUI("{{value0}} {{PROGRESS}} {{value1}}", { interpolation: { value0: String(t("Template text with")), value1: String(t(
 							"placeholder"
-						)}`
+						)) } })
 					)
 					.setValue(range.text)
 					.onChange(async (value) => {
@@ -586,7 +587,7 @@ function addProgressRangesSettings(
 					})
 			)
 			.addButton((button) => {
-				button.setButtonText("Delete").onClick(async () => {
+				button.setButtonText(translateUI("Delete")).onClick(async () => {
 					settingTab.plugin.settings.progressRanges.splice(index, 1);
 					settingTab.applySettingsUpdate();
 					settingTab.display();
@@ -628,7 +629,7 @@ function addProgressRangesSettings(
 				})
 		)
 		.addButton((button) => {
-			button.setButtonText("Add").onClick(async () => {
+			button.setButtonText(translateUI("Add")).onClick(async () => {
 				const settingsContainer = button.buttonEl.parentElement;
 				if (!settingsContainer) return;
 
@@ -730,7 +731,7 @@ function updateFormatPreview(
 		previewContainer.setText(renderedText);
 		previewContainer.removeClass("custom-format-preview-error");
 	} catch (error) {
-		previewContainer.setText("Error rendering format");
+		previewContainer.setText(translateUI("Error rendering format"));
 		previewContainer.addClass("custom-format-preview-error");
 	}
 }

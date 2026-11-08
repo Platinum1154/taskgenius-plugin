@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 /**
  * ICS Settings Component
  * Provides UI for managing ICS calendar sources
@@ -1059,7 +1060,7 @@ class IcsSourceModal extends Modal {
 			)
 			.setClass("holiday-setting")
 			.addText((text) => {
-				text.setPlaceholder("{title} ({count} days)")
+				text.setPlaceholder(translateUI("{title} ({count} days)"))
 					.setValue(
 						this.source.holidayConfig!.groupDisplayFormat || "",
 					)
@@ -1400,7 +1401,7 @@ class TextReplacementModal extends Modal {
 					".test-result",
 				) as HTMLElement;
 				if (resultSpan) {
-					resultSpan.textContent = "Invalid regex pattern";
+					resultSpan.textContent = translateUI("Invalid regex pattern");
 					resultSpan.style.color = "#f44336";
 				}
 			}
@@ -1415,7 +1416,7 @@ class TextReplacementModal extends Modal {
 				),
 			)
 			.addText((text) => {
-				text.setPlaceholder("^Meeting: ")
+				text.setPlaceholder(translateUI("^Meeting: "))
 					.setValue(this.rule.pattern)
 					.onChange((value) => {
 						this.rule.pattern = value;
@@ -1472,26 +1473,26 @@ class TextReplacementModal extends Modal {
 		// Remove prefix example
 		const example1 = examplesList.createEl("li");
 		example1.createEl("strong", { text: t("Remove prefix") + ": " });
-		example1.createSpan({ text: "Pattern: " });
-		example1.createEl("code", { text: "^Meeting: " });
-		example1.createSpan({ text: ", Replacement: " });
+		example1.createSpan({ text: translateUI("Pattern: ") });
+		example1.createEl("code", { text: translateUI("^Meeting: ") });
+		example1.createSpan({ text: translateUI(", Replacement: ") });
 		example1.createEl("code", { text: "" });
 
 		// Replace room numbers example
 		const example2 = examplesList.createEl("li");
 		example2.createEl("strong", { text: t("Replace room numbers") + ": " });
-		example2.createSpan({ text: "Pattern: " });
-		example2.createEl("code", { text: "Room (\\d+)" });
-		example2.createSpan({ text: ", Replacement: " });
-		example2.createEl("code", { text: "Conference Room $1" });
+		example2.createSpan({ text: translateUI("Pattern: ") });
+		example2.createEl("code", { text: translateUI("Room (\\d+)") });
+		example2.createSpan({ text: translateUI(", Replacement: ") });
+		example2.createEl("code", { text: translateUI("Conference Room $1") });
 
 		// Swap words example
 		const example3 = examplesList.createEl("li");
 		example3.createEl("strong", { text: t("Swap words") + ": " });
-		example3.createSpan({ text: "Pattern: " });
-		example3.createEl("code", { text: "(\\w+) with (\\w+)" });
-		example3.createSpan({ text: ", Replacement: " });
-		example3.createEl("code", { text: "$2 and $1" });
+		example3.createSpan({ text: translateUI("Pattern: ") });
+		example3.createEl("code", { text: translateUI("(\\w+) with (\\w+)") });
+		example3.createSpan({ text: translateUI(", Replacement: ") });
+		example3.createEl("code", { text: translateUI("$2 and $1") });
 
 		// Test section
 		const testContainer = contentEl.createDiv();
@@ -1508,7 +1509,7 @@ class TextReplacementModal extends Modal {
 			.setDesc(t("Enter text to test the replacement rule"))
 			.addText((text) => {
 				testInput = text;
-				text.setPlaceholder("Meeting: Weekly Standup").onChange(
+				text.setPlaceholder(translateUI("Meeting: Weekly Standup")).onChange(
 					(value) => {
 						updateTestOutput(value);
 					},

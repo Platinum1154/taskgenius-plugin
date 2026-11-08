@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	ButtonComponent,
 	Component,
@@ -61,7 +62,7 @@ export class MappingHabitCard extends HabitCard {
 					);
 					cellContent.addClass("has-tooltip");
 				} else {
-					cellContent.setAttribute("aria-label", `Value: ${value}`);
+					cellContent.setAttribute("aria-label", translateUI("Value: {{value0}}", { interpolation: { value0: String(value) } }));
 				}
 
 				return cellContent;
@@ -99,7 +100,7 @@ export class MappingHabitCard extends HabitCard {
 					new Notice(noticeText);
 				} else {
 					new Notice(
-						"Please select a valid value using the slider first."
+						translateUI("Please select a valid value using the slider first.")
 					);
 				}
 			});

@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	setIcon,
 	Menu,
@@ -305,12 +306,12 @@ export class TopNavigation extends Component {
 
 		if (overdueTasks.length === 0) {
 			menu.addItem((item) => {
-				item.setTitle("No overdue tasks").setDisabled(true);
+				item.setTitle(translateUI("No overdue tasks")).setDisabled(true);
 			});
 		} else {
 			menu.addItem((item) => {
 				item.setTitle(
-					`${overdueTasks.length} overdue tasks`,
+					translateUI("{{value0}} overdue tasks", { interpolation: { value0: String(overdueTasks.length) } }),
 				).setDisabled(true);
 			});
 
@@ -377,10 +378,10 @@ export class TopNavigation extends Component {
 		this.viewTabsContainer.empty();
 
 		const modeConfig: Record<ViewMode, { icon: string; label: string }> = {
-			list: { icon: "list", label: "List" },
-			kanban: { icon: "layout-grid", label: "Kanban" },
-			tree: { icon: "git-branch", label: "Tree" },
-			calendar: { icon: "calendar", label: "Calendar" },
+			list: { icon: "list", label: translateUI("List") },
+			kanban: { icon: "layout-grid", label: translateUI("Kanban") },
+			tree: { icon: "git-branch", label: translateUI("Tree") },
+			calendar: { icon: "calendar", label: translateUI("Calendar") },
 		};
 
 		for (const mode of this.availableModes) {

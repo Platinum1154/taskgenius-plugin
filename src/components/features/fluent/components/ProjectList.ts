@@ -787,6 +787,7 @@ export class ProjectList extends Component {
 
 		// Save settings
 		await this.plugin.saveSettings();
+		await this.plugin.triggerViewUpdate();
 
 		// Refresh the project list
 		this.loadProjects();
@@ -1009,6 +1010,7 @@ export class ProjectList extends Component {
 
 		// Save settings
 		await this.plugin.saveSettings();
+		await this.plugin.triggerViewUpdate();
 
 		// Refresh the project list
 		this.loadProjects();
@@ -1028,15 +1030,11 @@ export class ProjectList extends Component {
 				const { contentEl } = this;
 				contentEl.createEl("h2", { text: t("Delete Project") });
 				contentEl.createEl("p", {
-					text: t(
-						`Are you sure you want to delete "${
-							project.displayName || project.name
-						}"?`,
-					),
+					text: t('Delete the project configuration "{{name}}"?', { interpolation: { name: project.displayName || project.name } }),
 				});
 				contentEl.createEl("p", {
 					cls: "mod-warning",
-					text: t("This action cannot be undone."),
+					text: t("Tasks and file project properties are kept. Projects referenced by tasks will still appear."),
 				});
 
 				const buttonContainer = contentEl.createDiv({
@@ -1077,6 +1075,7 @@ export class ProjectList extends Component {
 						1,
 					);
 					await this.plugin.saveSettings();
+					await this.plugin.triggerViewUpdate();
 
 					// If this was the active project, clear selection
 					if (this.activeProjectId === project.filterKey) {

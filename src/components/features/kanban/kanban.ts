@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	App,
 	Component,
@@ -68,7 +69,7 @@ export class KanbanComponent extends Component {
 	private sortOption: KanbanSortOption = {
 		field: "priority",
 		order: "desc",
-		label: "Priority (High to Low)",
+		label: translateUI("Priority (High to Low)"),
 	};
 	private hideEmptyColumns = false;
 	private configOverride: Partial<KanbanSpecificConfig> | null = null; // Configuration override from Bases view
@@ -867,12 +868,12 @@ export class KanbanComponent extends Component {
 		switch (groupBy) {
 			case "priority":
 				return [
-					{ title: "🔺 Highest", value: 5, id: "priority-5" },
-					{ title: "⏫ High", value: 4, id: "priority-4" },
-					{ title: "🔼 Medium", value: 3, id: "priority-3" },
-					{ title: "🔽 Low", value: 2, id: "priority-2" },
-					{ title: "⏬ Lowest", value: 1, id: "priority-1" },
-					{ title: "No Priority", value: null, id: "priority-none" },
+					{ title: translateUI("🔺 Highest"), value: 5, id: "priority-5" },
+					{ title: translateUI("⏫ High"), value: 4, id: "priority-4" },
+					{ title: translateUI("🔼 Medium"), value: 3, id: "priority-3" },
+					{ title: translateUI("🔽 Low"), value: 2, id: "priority-2" },
+					{ title: translateUI("⏬ Lowest"), value: 1, id: "priority-1" },
+					{ title: translateUI("No Priority"), value: null, id: "priority-none" },
 				];
 			case "tags":
 				// Get unique tags from all tasks
@@ -894,7 +895,7 @@ export class KanbanComponent extends Component {
 					id: `tag-${tag}`,
 				}));
 				tagColumns.unshift({
-					title: "No Tags",
+					title: translateUI("No Tags"),
 					value: "",
 					id: "tag-none",
 				});
@@ -916,7 +917,7 @@ export class KanbanComponent extends Component {
 					}),
 				);
 				projectColumns.push({
-					title: "No Project",
+					title: translateUI("No Project"),
 					value: "",
 					id: "project-none",
 				});
@@ -938,7 +939,7 @@ export class KanbanComponent extends Component {
 					}),
 				);
 				contextColumns.push({
-					title: "No Context",
+					title: translateUI("No Context"),
 					value: "",
 					id: "context-none",
 				});
@@ -948,28 +949,28 @@ export class KanbanComponent extends Component {
 			case "startDate":
 				return [
 					{
-						title: "Overdue",
+						title: translateUI("Overdue"),
 						value: "overdue",
 						id: `${groupBy}-overdue`,
 					},
-					{ title: "Today", value: "today", id: `${groupBy}-today` },
+					{ title: translateUI("Today"), value: "today", id: `${groupBy}-today` },
 					{
-						title: "Tomorrow",
+						title: translateUI("Tomorrow"),
 						value: "tomorrow",
 						id: `${groupBy}-tomorrow`,
 					},
 					{
-						title: "This Week",
+						title: translateUI("This Week"),
 						value: "thisWeek",
 						id: `${groupBy}-thisWeek`,
 					},
 					{
-						title: "Next Week",
+						title: translateUI("Next Week"),
 						value: "nextWeek",
 						id: `${groupBy}-nextWeek`,
 					},
-					{ title: "Later", value: "later", id: `${groupBy}-later` },
-					{ title: "No Date", value: null, id: `${groupBy}-none` },
+					{ title: translateUI("Later"), value: "later", id: `${groupBy}-later` },
+					{ title: translateUI("No Date"), value: null, id: `${groupBy}-none` },
 				];
 			case "filePath":
 				// Get unique file paths from all tasks
@@ -985,7 +986,7 @@ export class KanbanComponent extends Component {
 					id: `path-${path.replace(/[^a-zA-Z0-9]/g, "-")}`,
 				}));
 			default:
-				return [{ title: "All Tasks", value: null, id: "all" }];
+				return [{ title: translateUI("All Tasks"), value: null, id: "all" }];
 		}
 	}
 

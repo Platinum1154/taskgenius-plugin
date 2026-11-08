@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import {
 	MarkdownPostProcessorContext,
 	MarkdownRenderChild,
@@ -326,7 +327,7 @@ export class WidgetCodeBlockProcessor {
 		container.addClass("tg-embedded-widget-placeholder");
 		container.createDiv({
 			cls: "tg-embedded-widget-placeholder-text",
-			text: `${type.charAt(0).toUpperCase() + type.slice(1)} widget coming soon`,
+			text: translateUI("{{value0}} widget coming soon", { interpolation: { value0: String(type.charAt(0).toUpperCase() + type.slice(1)) } }),
 		});
 	}
 

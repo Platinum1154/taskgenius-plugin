@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { App, Notice } from "obsidian";
 import {
 	AnySidebarComponentType,
@@ -313,7 +314,7 @@ export class WorkspaceManager {
 		const previousId = config.activeWorkspaceId;
 
 		if (!config.byId[workspaceId]) {
-			new Notice(`Workspace not found. Using default workspace.`);
+			new Notice(translateUI("Workspace not found. Using default workspace."));
 			workspaceId = config.defaultWorkspaceId;
 		}
 
@@ -405,7 +406,7 @@ export class WorkspaceManager {
 
 		// Cannot delete default workspace
 		if (workspaceId === config.defaultWorkspaceId) {
-			new Notice("Cannot delete the default workspace");
+			new Notice(translateUI("Cannot delete the default workspace"));
 			return;
 		}
 
@@ -759,7 +760,7 @@ export class WorkspaceManager {
 			await this.plugin.saveSettings();
 			return newWorkspace;
 		} catch (e) {
-			new Notice("Failed to import workspace configuration");
+			new Notice(translateUI("Failed to import workspace configuration"));
 			console.error("Workspace import error:", e);
 			return null;
 		}

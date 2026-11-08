@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 /**
  * Bulk Operations Menu
  * Provides right-click context menu for bulk task operations
@@ -33,7 +34,7 @@ export async function showBulkOperationsMenu(
 
 	// Menu title
 	menu.addItem((item) => {
-		item.setTitle(`${selectedCount} tasks selected`);
+		item.setTitle(translateUI("{{value0}} tasks selected", { interpolation: { value0: String(selectedCount) } }));
 		item.setDisabled(true);
 	});
 
@@ -298,7 +299,7 @@ function addBulkSetPriorityMenu(
 		for (let priority = 1; priority <= 5; priority++) {
 			submenu.addItem((subItem) => {
 				subItem.setTitle(
-					`${"!".repeat(priority)} Priority ${priority}`,
+					translateUI("{{value0}} Priority {{value1}}", { interpolation: { value0: String("!".repeat(priority)), value1: String(priority) } }),
 				);
 				subItem.onClick(async () => {
 					await executeBulkSetPriority(
@@ -882,11 +883,11 @@ function showOperationResult(
 ): void {
 	if (result.failCount === 0) {
 		new Notice(
-			`✓ ${operation}: ${result.successCount} tasks updated successfully`,
+			translateUI("✓ {{value0}}: {{value1}} tasks updated successfully", { interpolation: { value0: String(operation), value1: String(result.successCount) } }),
 		);
 	} else {
 		new Notice(
-			`⚠ ${operation}: ${result.successCount} succeeded, ${result.failCount} failed`,
+			translateUI("⚠ {{value0}}: {{value1}} succeeded, {{value2}} failed", { interpolation: { value0: String(operation), value1: String(result.successCount), value2: String(result.failCount) } }),
 		);
 
 		// Log errors to console

@@ -1,3 +1,4 @@
+import { renderLanguageSetting } from "./components/features/settings/components/LanguageSetting";
 import { App, PluginSettingTab, setIcon, Setting, debounce } from "obsidian";
 import TaskProgressBarPlugin from ".";
 
@@ -22,6 +23,9 @@ export class TaskProgressBarSettingTab extends PluginSettingTab {
 	constructor(app: App, plugin: TaskProgressBarPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+		plugin.registerEvent(app.workspace.on("task-genius:language-changed", () => {
+			if (this.containerEl?.isConnected) this.display();
+		}));
 
 		// Initialize debounced functions
 		this.debouncedApplySettings = debounce(
@@ -103,6 +107,8 @@ export class TaskProgressBarSettingTab extends PluginSettingTab {
 				"A comprehensive task management plugin for Obsidian with advanced progress tracking, workflows, and productivity features.",
 			),
 		});
+
+		renderLanguageSetting(this.plugin, containerEl);
 
 		// Main action button
 		// const actionContainer = containerEl.createDiv({

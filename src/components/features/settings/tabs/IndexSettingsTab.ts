@@ -1,3 +1,4 @@
+import { t as translateUI } from "@/translations/helper";
 import { Setting, Notice, setIcon } from "obsidian";
 import { TaskProgressBarSettingTab } from "@/setting";
 import { t } from "@/translations/helper";
@@ -149,8 +150,8 @@ export function renderIndexSettingsTab(
 			)
 			.addDropdown((dropdown) => {
 				dropdown
-					.addOption("dataview", "Dataview")
-					.addOption("tasks", "Tasks")
+					.addOption("dataview", translateUI("Dataview"))
+					.addOption("tasks", translateUI("Tasks"))
 					.setValue(settingTab.plugin.settings.preferMetadataFormat)
 					.onChange(async (value) => {
 						settingTab.plugin.settings.preferMetadataFormat =

@@ -1,3 +1,5 @@
+import { getInterfaceLocale } from "@/utils/date/interface-date";
+import { t as translateUI } from "@/translations/helper";
 import { App, Component, MarkdownRenderer, Menu, TFile } from "obsidian";
 import { Task } from "@/types/task"; // Adjust path
 import { MarkdownRendererComponent } from "@/components/ui/renderers/MarkdownRenderer"; // Adjust path
@@ -198,7 +200,7 @@ export class KanbanCardComponent extends Component {
 		} else if (dueDate.getTime() === tomorrow.getTime()) {
 			dateText = "Tomorrow";
 		} else {
-			dateText = dueDate.toLocaleDateString(undefined, {
+			dateText = dueDate.toLocaleDateString(getInterfaceLocale(), {
 				month: "short",
 				day: "numeric",
 			});
@@ -206,7 +208,7 @@ export class KanbanCardComponent extends Component {
 		dueEl.textContent = `${dateText}`;
 		dueEl.setAttribute(
 			"aria-label",
-			`Due: ${dueDate.toLocaleDateString()}`,
+			translateUI("Due: {{value0}}", { interpolation: { value0: String(dueDate.toLocaleDateString()) } }),
 		);
 	}
 
@@ -216,13 +218,13 @@ export class KanbanCardComponent extends Component {
 		});
 		const metadata = this.task.metadata || {};
 		const completedDate = new Date(metadata.completedDate || "");
-		completedEl.textContent = `Done: ${completedDate.toLocaleDateString(
+		completedEl.textContent = translateUI("Done: {{value0}}", { interpolation: { value0: String(completedDate.toLocaleDateString(
 			undefined,
 			{ month: "short", day: "numeric" },
-		)}`;
+		)) } });
 		completedEl.setAttribute(
 			"aria-label",
-			`Completed: ${completedDate.toLocaleDateString()}`,
+			translateUI("Completed: {{value0}}", { interpolation: { value0: String(completedDate.toLocaleDateString()) } }),
 		);
 	}
 
@@ -244,7 +246,7 @@ export class KanbanCardComponent extends Component {
 		}
 
 		projectEl.textContent = effectiveProject;
-		projectEl.setAttribute("aria-label", `Project: ${effectiveProject}`);
+		projectEl.setAttribute("aria-label", translateUI("Project: {{value0}}", { interpolation: { value0: String(effectiveProject) } }));
 
 		// Make project clickable for filtering
 		this.registerDomEvent(projectEl, "click", (ev) => {
@@ -297,7 +299,7 @@ export class KanbanCardComponent extends Component {
 		}
 		const priorityEl = this.metadataEl.createDiv({ cls: classes });
 		priorityEl.textContent = `${"!".repeat(metadata.priority || 0)}`;
-		priorityEl.setAttribute("aria-label", `Priority ${metadata.priority}`);
+		priorityEl.setAttribute("aria-label", translateUI("Priority {{value0}}", { interpolation: { value0: String(metadata.priority) } }));
 
 		// Make priority clickable for filtering
 		this.registerDomEvent(priorityEl, "click", (ev) => {
