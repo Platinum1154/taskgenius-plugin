@@ -837,6 +837,10 @@ test('pause styles include legacy and workflow marks and override checked comple
   assert.equal(getNextTaskStatusMark(mark,e.plugin.settings),'-');
  }
  assert.equal(getTaskStatusGroup('x',e.plugin.settings),'completed');
+ assert.equal(getTaskStatusGroup('X',e.plugin.settings),'completed');
+ assert.equal(getTaskStatusGroup('>',e.plugin.settings),'inProgress');
+ assert.equal(getNextTaskStatusMark('X',e.plugin.settings),'=');
+ assert.equal(getNextTaskStatusMark('>',e.plugin.settings),'x');
  const icons = new TaskGeniusIconManager(e.plugin);
  await icons.onload();
  const css = document.getElementById('task-genius-pause-icons').textContent;

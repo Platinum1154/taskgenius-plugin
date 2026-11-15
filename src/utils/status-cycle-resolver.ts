@@ -481,7 +481,11 @@ export function getTaskStatusGroup(mark: string, settings: StatusSettings): Task
 	for (const [name, value] of Object.entries(settings.taskStatusMarks || {})) {
 		if (value === mark) return statusGroup(name);
 	}
-	return statusGroup(mark);
+	const defaults: Record<string, TaskStatusGroup> = {
+		" ": "notStarted", "?": "planned", "/": "inProgress", ">": "inProgress",
+		x: "completed", X: "completed", a: "archived", "-": "abandoned",
+	};
+	return statusGroup(mark) || defaults[mark];
 }
 
 /** Use the same primary workflow as source-mode checkboxes. */
