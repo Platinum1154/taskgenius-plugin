@@ -14,6 +14,7 @@ const {JSDOM}=createRequire(require.resolve('jest-environment-jsdom'))('jsdom');
 const directory=await mkdtemp(path.join(tmpdir(),'tg-ui-audit-'));
 after(()=>rm(directory,{recursive:true,force:true}));
 const owned=[
+ 'utils/status-cycle-resolver.ts', 'components/features/task/view/forecast.ts',
  'components/features/quick-capture/modals/BaseQuickCaptureModal.ts', 'components/ui/feedback/StatusIndicator.ts', 'services/time-parsing-service.ts', 'components/features/task/edit/TaskDependencyPicker.ts', 'managers/icon-manager.ts', 'components/features/quick-capture/modals/QuickCaptureModalWithSwitch.ts', 'components/features/task/view/details.ts',
 
  "dataflow/Orchestrator.ts",
@@ -38,6 +39,8 @@ const owned=[
  'components/features/kanban/kanban.ts', 'components/features/quadrant/quadrant.ts', 'components/features/table/TableView.ts',
 ].map(file=>path.resolve('src',file));
 await build({stdin:{contents:`
+ export {ForecastComponent} from './src/components/features/task/view/forecast';
+ export {getTaskStatusGroup,getNextTaskStatusMark,getPausedTaskMarks} from './src/utils/status-cycle-resolver';
  export {TaskGeniusIconManager} from './src/managers/icon-manager';
  export {calendarWeekNumber} from './src/utils/date/calendar-week';
  export {projectFolderContainer} from './src/components/features/fluent/components/ProjectFolders';
@@ -103,7 +106,7 @@ export function createEmbeddableMarkdownEditor(app,root,options){const input=roo
    });
  }}],
 });
-const {Component,Platform,FluentLayoutManager,TaskGeniusIconManager,calendarWeekNumber,projectFolderContainer,getStatusIcon,ProjectFileManager,ProjectEditModal,ProjectCreateModal,openPeriodNote,attachDateTimePicker,QuickCaptureModal,getStatusText,DataflowOrchestrator,TaskPlanner,GanttComponent,TaskDetailsModal,TaskMetadataEditor,KanbanComponent,QuadrantComponent,QUADRANT_DEFINITIONS,TableView,TableRenderer,FluentSidebar,Menu,QuadrantColumnComponent,registerGanttPan,MarkdownStatusSync,TaskRendererComponent,SavedTaskFilterModal,ContentComponent,TopNavigation,FluentDataManager,FluentComponentManager,CalendarComponent,ViewComponentManager,FluentTaskView,HabitModal,PointsDashboard,snapshotViewSettings,AuthMiddleware,ProjectList,vaultFixture,moment}=await import(pathToFileURL(path.join(directory,'ui.mjs')));
+const {ForecastComponent,getTaskStatusGroup,getNextTaskStatusMark,getPausedTaskMarks,Component,Platform,FluentLayoutManager,TaskGeniusIconManager,calendarWeekNumber,projectFolderContainer,getStatusIcon,ProjectFileManager,ProjectEditModal,ProjectCreateModal,openPeriodNote,attachDateTimePicker,QuickCaptureModal,getStatusText,DataflowOrchestrator,TaskPlanner,GanttComponent,TaskDetailsModal,TaskMetadataEditor,KanbanComponent,QuadrantComponent,QUADRANT_DEFINITIONS,TableView,TableRenderer,FluentSidebar,Menu,QuadrantColumnComponent,registerGanttPan,MarkdownStatusSync,TaskRendererComponent,SavedTaskFilterModal,ContentComponent,TopNavigation,FluentDataManager,FluentComponentManager,CalendarComponent,ViewComponentManager,FluentTaskView,HabitModal,PointsDashboard,snapshotViewSettings,AuthMiddleware,ProjectList,vaultFixture,moment}=await import(pathToFileURL(path.join(directory,'ui.mjs')));
 function environment(){
  const dom=new JSDOM('<body></body>',{url:'https://obsidian.invalid',pretendToBeVisual:true});installObsidianDom(dom.window);
  globalThis.window=dom.window;globalThis.document=dom.window.document;globalThis.HTMLElement=dom.window.HTMLElement;globalThis.Window=dom.window.Window;globalThis.Event=dom.window.Event;globalThis.Document=dom.window.Document;
@@ -759,4 +762,104 @@ test('duplicate background task snapshots retain the rendered view and a real ch
   manager.unload();
   e.close();
  }
+});
+
+const workflowSettings = () => ({
+ taskStatuses: {completed:'x',inProgress:'/',abandoned:'-',planned:'?',notStarted:' ',archived:'a'},
+ taskStatusCycle: ['Not Started','Planned','In Progress','Completed','Paused','Abandoned'],
+ taskStatusMarks: {'Not Started':' ','Planned':'?','In Progress':'/','Completed':'x','Paused':'=','Abandoned':'-'},
+ statusCycles: [{id:'default',enabled:true,priority:0,cycle:['Not Started','Planned','In Progress','Completed','Paused','Abandoned'],marks:{'Not Started':' ','Planned':'?','In Progress':'/','Completed':'x','Paused':'=','Abandoned':'-'}}],
+ excludeMarksFromCycle: [],
+});
+
+test('calendar checkboxes follow the configured workflow and complete only at the completed step', async () => {
+ const e = environment();
+ Object.assign(e.plugin.settings, workflowSettings());
+ const original = {...task('Calendar workflow'), metadata:{tags:[]}};
+ const calendar = new CalendarComponent(e.app,e.plugin,document.body.createDiv(),[original]);
+ const writes = [];
+ calendar.processTasks = async () => {};
+ calendar.renderCurrentView = () => {};
+ e.plugin.writeAPI = {updateTask: async args => {
+  writes.push(args);
+  return {success:true};
+ }};
+ try {
+  for (const expected of ['?','/','x','=','-',' ']) {
+   const current = calendar.tasks[0];
+   await calendar.cycleTaskStatus(current);
+   assert.equal(calendar.tasks[0].status, expected);
+   assert.equal(writes.at(-1).updates.completed, expected === 'x');
+   assert.equal(!!writes.at(-1).updates.metadata.completedDate, expected === 'x');
+  }
+  assert.equal(original.status, ' ');
+  assert.equal(original.metadata.completedDate, undefined);
+  e.plugin.writeAPI.updateTask = async () => ({success:false,error:'disk busy'});
+  await calendar.cycleTaskStatus(calendar.tasks[0]);
+  assert.equal(calendar.tasks[0].status, ' ');
+ } finally {calendar.unload();e.close();}
+});
+
+test('the current calendar event render entry uses the workflow writer and serializes repeat taps', async () => {
+ const e = environment();
+ Object.assign(e.plugin.settings, workflowSettings());
+ const original = task('Event');
+ const calendar = new CalendarComponent(e.app,e.plugin,document.body.createDiv(),[original]);
+ calendar.processTasks = async () => {};
+ calendar.renderCurrentView = () => {};
+ let save, count = 0;
+ e.plugin.writeAPI = {updateTask: args => {
+  count++;
+  assert.equal(args.updates.status,'?');
+  return new Promise(resolve => save = resolve);
+ }};
+ const event = document.body.createDiv();
+ calendar.handleTGRenderEvent({event:original,el:event,defaultRender(){}});
+ const checkbox = event.querySelector('input[type=checkbox]');
+ assert.ok(checkbox);
+ checkbox.click();
+ assert.equal(count,1);
+ await calendar.cycleTaskStatus(original);
+ assert.equal(count,1);
+ save({success:true});
+ await new Promise(resolve => setImmediate(resolve));
+ assert.equal(calendar.tasks[0].status,'?');
+ assert.equal(calendar.tasks[0].completed,false);
+ calendar.unload(); e.close();
+});
+
+test('pause styles include legacy and workflow marks and override checked completion artwork', async () => {
+ const e = environment();
+ Object.assign(e.plugin.settings,workflowSettings(),{enableTaskGeniusIcons:false});
+ assert.deepEqual(getPausedTaskMarks(e.plugin.settings).sort(),['=','a']);
+ for(const mark of ['a','=']) {
+  assert.equal(getTaskStatusGroup(mark,e.plugin.settings),'archived');
+  assert.equal(getNextTaskStatusMark(mark,e.plugin.settings),'-');
+ }
+ assert.equal(getTaskStatusGroup('x',e.plugin.settings),'completed');
+ const icons = new TaskGeniusIconManager(e.plugin);
+ await icons.onload();
+ const css = document.getElementById('task-genius-pause-icons').textContent;
+ assert.match(css,/data-task="="/);
+ assert.match(css,/data-task="a"/);
+ assert.match(css,/mask:.*!important/);
+ assert.doesNotMatch(css,/data-task="x"/);
+ if(process.env.TG_LAYOUT_DIR){
+  fs.mkdirSync(process.env.TG_LAYOUT_DIR,{recursive:true});
+  fs.writeFileSync(path.join(process.env.TG_LAYOUT_DIR,'pause.css'),css);
+ }
+ icons.unload(); e.close();
+});
+
+test('forecast renders every future date expanded, including dates beyond the current year', () => {
+ const component = Object.create(ForecastComponent.prototype);
+ component.plugin = {settings:{viewConfiguration:[]}};
+ component.currentDate = new Date(2026,10,15);
+ component.todayTasks = [];
+ component.pastTasks = [];
+ component.futureTasks = [task('Far future'), task('Next year')];
+ component.getRelevantDate = task => new Date(task.id === 'Far future' ? 2026 : 2027,11,20).getTime();
+ component.calculateDateSections();
+ assert.equal(component.dateSections.length,2);
+ assert.ok(component.dateSections.every(section => section.isExpanded));
 });

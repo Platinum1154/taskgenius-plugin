@@ -6,7 +6,7 @@
  * priority-based cycle selection.
  */
 
-import type { StatusCycle } from "@/common/setting-definition";
+import type { StatusCycle, TaskProgressBarSettings } from "@/common/setting-definition";
 
 /**
  * Result of finding the next status in a cycle
@@ -447,4 +447,81 @@ export function getAllStatusMarks(settings: {
 	}
 
 	return uniqueStatuses;
+}
+
+export type TaskStatusGroup = "notStarted" | "planned" | "inProgress" | "completed" | "archived" | "abandoned";
+
+type StatusSettings = Pick<TaskProgressBarSettings,
+	"statusCycles" | "taskStatuses" | "taskStatusCycle" | "taskStatusMarks" | "excludeMarksFromCycle">;
+
+function statusGroup(name: string): TaskStatusGroup | undefined {
+	const key = name.toLowerCase().replace(/[\s_-]/g, "");
+	const groups: Record<string, TaskStatusGroup> = {
+		notstarted: "notStarted", planned: "planned", inprogress: "inProgress",
+		completed: "completed", done: "completed", finished: "completed",
+		paused: "archived", pause: "archived", archived: "archived",
+		abandoned: "abandoned", cancelled: "abandoned", canceled: "abandoned",
+		未开始: "notStarted", 计划: "planned", 进行中: "inProgress",
+		已完成: "completed", 暂停: "archived", 已暂停: "archived", 已放弃: "abandoned",
+	};
+	return groups[key];
+}
+
+/** Resolve the workflow mark first, then accept marks from older task files. */
+export function getTaskStatusGroup(mark: string, settings: StatusSettings): TaskStatusGroup | undefined {
+	const cycle = findPrimaryCycle(mark, settings.statusCycles);
+	if (cycle) {
+		const name = cycle.cycle.find(name => cycle.marks[name] === mark);
+		const group = name && statusGroup(name);
+		if (group) return group;
+	}
+	for (const [name, marks] of Object.entries(settings.taskStatuses || {})) {
+		if (marks.split("|").includes(mark)) return statusGroup(name);
+	}
+	for (const [name, value] of Object.entries(settings.taskStatusMarks || {})) {
+		if (value === mark) return statusGroup(name);
+	}
+	return statusGroup(mark);
+}
+
+/** Use the same primary workflow as source-mode checkboxes. */
+export function getNextTaskStatusMark(mark: string, settings: StatusSettings): string {
+	const next = getNextStatusPrimary(mark, settings.statusCycles);
+	if (next?.mark?.length === 1) return next.mark;
+	// Older notes can use a different mark for the same status, such as a
+	// for pause while the current workflow uses =.
+	const group = getTaskStatusGroup(mark, settings);
+	if (group) {
+		const cycles = (settings.statusCycles || []).filter(cycle => cycle.enabled)
+			.sort((a, b) => a.priority - b.priority);
+		for (const cycle of cycles) {
+			const name = cycle.cycle.find(name => statusGroup(name) === group);
+			if (!name) continue;
+			const compatible = getNextStatus(cycle.marks[name], cycle);
+			if (compatible?.mark?.length === 1) return compatible.mark;
+		}
+	}
+	const names = (settings.taskStatusCycle || []).filter(name =>
+		!(settings.excludeMarksFromCycle || []).includes(name)
+		&& settings.taskStatusMarks?.[name]?.length === 1);
+	if (names.length) {
+		const index = names.findIndex(name => settings.taskStatusMarks[name] === mark);
+		return settings.taskStatusMarks[names[(index + 1) % names.length]];
+	}
+	return getTaskStatusGroup(mark, settings) === "completed"
+		? (settings.taskStatuses?.notStarted || " ").split("|")[0]
+		: (settings.taskStatuses?.completed || "x").split("|")[0];
+}
+
+export function getPausedTaskMarks(settings: StatusSettings): string[] {
+	const marks = new Set<string>();
+	for (const variants of Object.values(settings.taskStatuses || {})) {
+		for (const mark of variants.split("|")) marks.add(mark);
+	}
+	for (const cycle of settings.statusCycles || []) {
+		if (cycle.enabled) for (const name of cycle.cycle) marks.add(cycle.marks[name]);
+	}
+	for (const mark of Object.values(settings.taskStatusMarks || {})) marks.add(mark);
+	return [...marks].filter(mark => mark?.length === 1 && mark !== " "
+		&& getTaskStatusGroup(mark, settings) === "archived");
 }

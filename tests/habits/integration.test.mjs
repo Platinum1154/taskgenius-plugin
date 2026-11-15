@@ -15,6 +15,7 @@ await build({
   stdin: {contents: `export {TaskGeniusHabits} from './src/integrations/habits/task-genius-host';
     export {HabitStore} from './src/integrations/habits/habit-store';
     export {MissedHabitsModal} from './src/integrations/habits/ui/missed-habits-modal';
+    export {ConfirmModal} from './src/integrations/habits/ui/confirm-modal';
     export {NativeHabitCards} from './src/integrations/habits/ui/native-cards';
     export {nativeCardHeat} from './src/integrations/habits/ui/native-card-state';
     export {DEFAULT_SETTINGS, DEFAULT_FRONTMATTER_KEYS} from './src/integrations/habits/settings';
@@ -34,7 +35,7 @@ await build({
     builder.onResolve({filter: /^obsidian$/}, () => ({path: path.resolve('tests/habits/obsidian-fixture.mjs')}));
   }}],
 });
-const {TaskGeniusHabits, HabitStore, NativeHabitCards, MissedHabitsModal, nativeCardHeat, Events, DEFAULT_SETTINGS, DEFAULT_FRONTMATTER_KEYS,
+const {TaskGeniusHabits, ConfirmModal, Menu, HabitStore, NativeHabitCards, MissedHabitsModal, nativeCardHeat, Events, DEFAULT_SETTINGS, DEFAULT_FRONTMATTER_KEYS,
   planLegacyHabits, importLegacyHabits, isDue, isActive, isComplete, isDailyComplete, habitStats, missedInstances, isRescheduleTargetOpen, t, vaultFixture,
   ReminderSync, NoteHabitSync, computeNoteValue, applyCommentLog, parseCommentLog, generateSummary, ExportModal, resolveTaskPoints, taskCompletionTransactionId} = await import(pathToFileURL(path.join(directory, 'integration.mjs')));
 const settings = extra => ({...structuredClone(DEFAULT_SETTINGS), ...extra});
@@ -497,5 +498,33 @@ test('the missed dialog backfills the original day and preserves a concurrent re
  } finally {
   dom.window.close();
   delete globalThis.document;
+ }
+});
+
+test('the native card Stop habit menu stops tracking while keeping the Markdown note and records', async () => {
+ const dom=new JSDOM('<body></body>');
+ installObsidianDom(dom.window);
+ globalThis.document=dom.window.document;globalThis.window=dom.window;globalThis.testLanguage='en';
+ const f=vaultFixture(), config=settings();
+ await f.app.vault.createFolder('Habits');
+ const file=await f.app.vault.create('Habits/Read.md','---\n{"type":"binary","frequency":"daily","startDate":"2026-11-01","records":{"2026-11-01":1}}\n---\nKeep the original note body');
+ const store=new HabitStore(f.app,()=>config,async()=>{});
+ const root=document.body.createDiv();
+ const cards=new NativeHabitCards(f.app,store,config,new Events(),root);
+ const ask=ConfirmModal.ask;
+ ConfirmModal.ask=async()=>true;
+ try{
+  cards.onload();
+  root.querySelector('[aria-label="More actions"]').click();
+  const stop=Menu.last.items.find(item=>item.title==='Stop habit');
+  assert.ok(stop);
+  await stop.callback();
+  assert.equal(store.getHabits()[0].stopped,true);
+  assert.deepEqual(store.getHabits()[0].records,{'2026-11-01':1});
+  assert.ok(f.app.vault.getAbstractFileByPath(file.path));
+  assert.match(await f.app.vault.read(file),/Keep the original note body/);
+  assert.equal(root.querySelector('.tg-native-habit-card'),null);
+ }finally{
+  ConfirmModal.ask=ask;cards.unload();dom.window.close();delete globalThis.document;delete globalThis.window;
  }
 });

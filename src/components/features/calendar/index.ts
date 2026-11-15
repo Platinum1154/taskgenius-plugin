@@ -1,3 +1,4 @@
+import { getNextTaskStatusMark, getTaskStatusGroup } from "@/utils/status-cycle-resolver";
 import { calendarWeekNumber } from "@/utils/date/calendar-week";
 import { openPeriodNote, NotePeriod } from "@/managers/period-notes";
 import { isProjectCalendarEntry } from "@/utils/task/project-calendar";
@@ -92,6 +93,7 @@ export interface CalendarEvent extends Task {
 export class CalendarComponent extends Component {
 	public containerEl: HTMLElement;
 	private tasks: Task[] = [];
+	private pendingStatusChanges = new Set<string>();
 	private events: CalendarEvent[] = [];
 	private currentViewMode: CalendarViewMode = "month";
 	private currentDate: moment.Moment = moment();
@@ -983,40 +985,10 @@ export class CalendarComponent extends Component {
 			el.insertBefore(checkbox, el.firstChild);
 		}
 
-		// Handle checkbox click - same pattern as CalendarEventComponent
-		this.registerDomEvent(checkbox, "click", async (ev) => {
+		this.registerDomEvent(checkbox, "click", ev => {
+			ev.preventDefault();
 			ev.stopPropagation();
-
-			// Toggle task status
-			const newStatus = task.completed ? " " : "x";
-
-			if (this.plugin.writeAPI) {
-				const result = await this.plugin.writeAPI.updateTaskStatus({
-					taskId: task.id,
-					status: newStatus,
-					completed: !task.completed,
-				});
-
-				if (result.success) {
-					// Update UI immediately
-					checkbox.checked = !task.completed;
-					checkbox.dataset.task = newStatus;
-
-					// Trigger task-completed event if needed
-					if (!task.completed) {
-						this.app.workspace.trigger(
-							"task-genius:task-completed",
-							task,
-						);
-					}
-
-					// Refresh calendar
-					setTimeout(() => {
-						this.processTasks();
-						this.renderCurrentView();
-					}, 100);
-				}
-			}
+			void this.cycleTaskStatus(task, checkbox);
 		});
 	}
 
@@ -1473,51 +1445,11 @@ export class CalendarComponent extends Component {
 					cls: "task-checkbox-overlay",
 				});
 
-				const checkbox = checkboxContainer.createEl("input", {
-					cls: "task-list-item-checkbox",
-					type: "checkbox",
-					attr: {
-						"data-task": task.status || " ",
-					},
-				});
-
-				checkbox.checked = task.status !== " " && task.status !== "?";
-
-				// Handle checkbox click
-				this.registerDomEvent(checkbox, "click", async (ev) => {
+				const checkbox = createTaskCheckbox(task.status || " ", task, checkboxContainer);
+				this.registerDomEvent(checkbox, "click", ev => {
+					ev.preventDefault();
 					ev.stopPropagation();
-
-					// Toggle task status
-					const newStatus = task.completed ? " " : "x";
-
-					if (this.plugin.writeAPI) {
-						const result =
-							await this.plugin.writeAPI.updateTaskStatus({
-								taskId: task.id,
-								status: newStatus,
-								completed: !task.completed,
-							});
-
-						if (result.success) {
-							// Update UI
-							checkbox.checked = !task.completed;
-							checkbox.dataset.task = newStatus;
-
-							// Trigger task-completed event if needed
-							if (!task.completed) {
-								this.app.workspace.trigger(
-									"task-genius:task-completed",
-									task,
-								);
-							}
-
-							// Refresh calendar
-							setTimeout(() => {
-								this.processTasks();
-								this.renderCurrentView();
-							}, 100);
-						}
-					}
+					void this.cycleTaskStatus(task, checkbox);
 				});
 			});
 		}, 50); // Small delay to ensure TGCalendar has rendered events
@@ -1667,8 +1599,43 @@ export class CalendarComponent extends Component {
 	};
 
 	private onEventComplete = (ev: MouseEvent, event: CalendarEvent) => {
-		this.params?.onTaskCompleted?.(event);
+		ev.preventDefault();
+		ev.stopPropagation();
+		void this.cycleTaskStatus(event);
 	};
+
+	/** All calendar renderers write through the configured workflow. */
+	private async cycleTaskStatus(task: Task, checkbox?: HTMLInputElement): Promise<void> {
+		if (this.pendingStatusChanges.has(task.id)) return;
+		if (!this.plugin.writeAPI) {
+			new Notice(t("Task update system not available"));
+			return;
+		}
+		this.pendingStatusChanges.add(task.id);
+		if (checkbox) checkbox.disabled = true;
+		try {
+			const current = this.tasks.find(item => item.id === task.id) || task;
+			const status = getNextTaskStatusMark(current.status || " ", this.plugin.settings);
+			const completed = getTaskStatusGroup(status, this.plugin.settings) === "completed";
+			const metadata = { completedDate: completed ? current.metadata?.completedDate || Date.now() : undefined };
+			const result = await this.plugin.writeAPI.updateTask({
+				taskId: current.id, updates: { status, completed, metadata: metadata as Task["metadata"] },
+			});
+			if (!result.success) throw new Error(result.error || t("Failed to update task"));
+			if (this.tasks.some(item => item.id === current.id)) {
+				this.tasks = this.tasks.map(item => item.id === current.id
+					? result.task || { ...current, status, completed, metadata: { ...current.metadata, ...metadata } }
+					: item);
+			}
+			await this.processTasks();
+			this.renderCurrentView();
+		} catch (error) {
+			new Notice(String(error));
+		} finally {
+			this.pendingStatusChanges.delete(task.id);
+			if (checkbox) checkbox.disabled = false;
+		}
+	}
 
 	// ============================================
 	//  Task Processing

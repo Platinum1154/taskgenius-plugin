@@ -1,3 +1,4 @@
+import { getTaskStatusGroup } from "@/utils/status-cycle-resolver";
 import { Component, Menu, setIcon } from "obsidian";
 import TaskProgressBarPlugin from "@/index";
 import { Task } from "@/types/task";
@@ -225,7 +226,7 @@ export class TaskStatusIndicator extends Component {
 			: "";
 
 		this.element.querySelector(".task-status-indicator__icon")?.remove();
-		const paused = ["pause", "paused", "archived"].includes(this.normalizeStatus(context.displayName)) || (this.plugin.settings.taskStatuses?.archived || "").split("|").includes(context.currentMark);
+		const paused = getTaskStatusGroup(context.currentMark, this.plugin.settings) === "archived";
 		if (paused) { const icon = this.element.createSpan({ cls: "task-status-indicator__icon" }); setIcon(icon, "pause"); this.element.insertBefore(icon, this.statusTextEl); }
 		this.statusTextEl.setText(context.displayName);
 		this.element.setAttribute("data-status", context.statusSlug);
