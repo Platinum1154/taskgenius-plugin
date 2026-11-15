@@ -1,3 +1,4 @@
+import { getPausedTaskMarks } from "@/utils/status-cycle-resolver";
 import { Component } from "obsidian";
 import TaskProgressBarPlugin from "../index";
 import { getStatusIcon } from "../icon";
@@ -34,12 +35,43 @@ export class TaskGeniusIconManager extends Component {
 
 	private installPauseIcons(): void {
 		document.getElementById("task-genius-pause-icons")?.remove();
-		const style = document.createElement("style"); style.id = "task-genius-pause-icons";
-		const icon = getStatusIcon("pause"), encoded = this.encodeSvgForCSS(icon), color = this.extractFillColor(icon);
-		const marks = this.parseTaskStatuses(this.plugin.settings).filter(status => status.status === "archived").flatMap(status => status.chars);
-		style.textContent = [...new Set(marks)].map(mark => this.generateCSSRuleForChar(mark, encoded, color, false).split(this.BODY_CLASS).join("task-genius-pause-icons")).join("\n");
-		document.body.classList.add("task-genius-pause-icons"); document.head.appendChild(style);
+		const style = document.createElement("style");
+		style.id = "task-genius-pause-icons";
+		const encoded = this.encodeSvgForCSS(getStatusIcon("pause"));
+		const marks = getPausedTaskMarks(this.plugin.settings);
+		style.textContent = marks.map(mark => {
+			const selector = JSON.stringify(mark);
+			const inputs = [
+				`body.task-genius-pause-icons [data-task=${selector}] > input[type=checkbox]`,
+				`body.task-genius-pause-icons [data-task=${selector}] > p > input[type=checkbox]`,
+				`body.task-genius-pause-icons input[type=checkbox][data-task=${selector}]`,
+			];
+			return `
+${inputs.join(",\n")} {
+	appearance: none !important;
+	position: relative;
+	background: transparent !important;
+	border: 0 !important;
+}
+${inputs.map(input => input + "::before").join(",\n")} {
+	display: none !important;
+}
+${inputs.map(input => input + "::after").join(",\n")} {
+	content: "" !important;
+	display: block !important;
+	position: absolute;
+	inset: 0 !important;
+	width: var(--checkbox-size, 16px) !important;
+	height: var(--checkbox-size, 16px) !important;
+	background: var(--text-muted) !important;
+	mask: url("${encoded}") center / contain no-repeat !important;
+	-webkit-mask: url("${encoded}") center / contain no-repeat !important;
+}`;
+		}).join("\n");
+		document.body.classList.add("task-genius-pause-icons");
+		document.head.appendChild(style);
 	}
+
 	/**
 	 * Enable Task Genius Icons functionality
 	 */

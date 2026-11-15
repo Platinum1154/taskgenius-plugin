@@ -179,15 +179,11 @@ export class CalendarEventComponent extends Component {
 		);
 
 		this.registerDomEvent(checkbox, "click", (ev) => {
+			ev.preventDefault();
 			ev.stopPropagation();
 
 			if (this.params?.onEventComplete) {
 				this.params.onEventComplete(ev, this.event);
-			}
-
-			if (this.event.status === " ") {
-				checkbox.checked = true;
-				checkbox.dataset.task = "x";
 			}
 		});
 
@@ -269,15 +265,11 @@ export class CalendarEventComponent extends Component {
 		);
 
 		this.registerDomEvent(checkbox, "click", (ev) => {
+			ev.preventDefault();
 			ev.stopPropagation();
 
 			if (this.params?.onEventComplete) {
 				this.params.onEventComplete(ev, this.event);
-			}
-
-			if (this.event.status === " ") {
-				checkbox.checked = true;
-				checkbox.dataset.task = "x";
 			}
 		});
 
@@ -312,15 +304,11 @@ export class CalendarEventComponent extends Component {
 		);
 
 		this.registerDomEvent(checkbox, "click", (ev) => {
+			ev.preventDefault();
 			ev.stopPropagation();
 
 			if (this.params?.onEventComplete) {
 				this.params.onEventComplete(ev, this.event);
-			}
-
-			if (this.event.status === " ") {
-				checkbox.checked = true;
-				checkbox.dataset.task = "x";
 			}
 		});
 

@@ -77,7 +77,16 @@ export class Setting {
   addButton(callback) {return this.addControl('button',callback);}
 }
 export class Notice { constructor(text) { globalThis.lastNotice = text; } }
-export class Menu {}
+export class Menu {
+ static last;
+ constructor() { this.items=[]; Menu.last=this; }
+ addItem(callback) {
+  const item={setTitle(value){this.title=value;return this;},setIcon(){return this;},setDisabled(){return this;},setChecked(){return this;},onClick(callback){this.callback=callback;return this;}};
+  callback(item);this.items.push(item);return this;
+ }
+ addSeparator(){return this;}
+ showAtPosition(){return this;}
+}
 export const moment = Object.assign(() => ({format: () => '2026-11-08'}), {locale: () => globalThis.testLanguage ?? 'en'});
 export const debounce = callback => callback;
 export const normalizePath = value => value.replace(/\\/g, '/').replace(/\/+/g, '/').replace(/^\.\//, '').replace(/\/$/, '');

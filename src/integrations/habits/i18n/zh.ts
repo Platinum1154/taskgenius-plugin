@@ -210,6 +210,7 @@ export const zh: Record<string, string> = {
 	"Pause habit": "暂停习惯",
 	"Resume habit": "恢复习惯",
 	"Stop tracking": "停止跟踪",
+	"Stop habit": "停止习惯",
 	"Remove habit": "删除习惯",
 	'Stop tracking "{name}"? It leaves the dashboard and stats, but its note and full history are kept. You can resume tracking any time from the note\'s metrics view.':
 		"停止跟踪“{name}”？它将从面板和统计中移除，但其笔记和全部历史记录会保留。你随时可以在笔记的指标视图中恢复跟踪。",

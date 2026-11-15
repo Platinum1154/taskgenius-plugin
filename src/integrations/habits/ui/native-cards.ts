@@ -81,7 +81,7 @@ export class NativeHabitCards extends MarkdownRenderChild {
 				menu.addItem(item => item.setTitle(habit.paused ? t("Resume habit") : t("Pause habit")).setIcon(habit.paused ? "play" : "pause").onClick(async () => {
 					if (habit.paused) await this.store.resumeHabit(original); else await this.store.pauseHabit(original); this.render();
 				}));
-				menu.addItem(item => item.setTitle(t("Stop tracking")).setIcon("circle-stop").onClick(async () => {
+				menu.addItem(item => item.setTitle(t("Stop habit")).setIcon("circle-stop").onClick(async () => {
 					const message = t("Stop tracking \"{name}\"? It leaves the dashboard and stats, but its note and full history are kept. You can resume tracking any time from the note's metrics view.", { name: habit.name });
 					if (!await ConfirmModal.ask(this.app, t("Stop tracking"), message)) return;
 					try { await this.store.stopHabit(original); this.render(); }

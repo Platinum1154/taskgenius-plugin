@@ -753,10 +753,7 @@ export class ForecastComponent extends Component {
 				title: title,
 				date: date,
 				tasks: tasks,
-				isExpanded: this.shouldExpandFutureSection(
-					date,
-					this.currentDate
-				), // Expand based on relation to today
+				isExpanded: true,
 			});
 		});
 
@@ -1137,11 +1134,7 @@ export class ForecastComponent extends Component {
 				title: title,
 				date: date,
 				tasks: tasks,
-				// Expand based on relation to the selected date
-				isExpanded: this.shouldExpandFutureSection(
-					date,
-					this.selectedDate
-				),
+				isExpanded: true,
 			});
 		});
 
@@ -1204,20 +1197,6 @@ export class ForecastComponent extends Component {
 		return `${prefix}${dayOfWeek}, ${formattedDate}`;
 	}
 
-	// Helper to decide if a future section should be expanded relative to a comparison date
-	private shouldExpandFutureSection(
-		sectionDate: Date,
-		compareDate: Date
-	): boolean {
-		const compareTimestamp = new Date(compareDate).setHours(0, 0, 0, 0);
-		const sectionTimestamp = new Date(sectionDate).setHours(0, 0, 0, 0);
-		// Calculate difference in days from the comparison date
-		const dayDiff = Math.round(
-			(sectionTimestamp - compareTimestamp) / (1000 * 3600 * 24)
-		);
-		// Expand if the section date is within the next 7 days *after* the comparison date
-		return dayDiff > 0 && dayDiff <= 7;
-	}
 
 	// Renaming getTasksForDate to be more specific about its check
 	private getTasksForRelevantDate(date: Date): Task[] {

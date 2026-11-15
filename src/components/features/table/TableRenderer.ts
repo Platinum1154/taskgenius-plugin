@@ -1,3 +1,4 @@
+import { getTaskStatusGroup } from "@/utils/status-cycle-resolver";
 import { Component, setIcon, Menu, App } from "obsidian";
 import { TableColumn, TableRow, TableCell } from "./TableTypes";
 import { TableSpecificConfig } from "../../../common/setting-definition";
@@ -770,8 +771,7 @@ export class TableRenderer extends Component {
 		const statusIcon = statusContainer.createSpan("task-table-status-icon");
 		const status = cell.value as string;
 
-		const configured = Object.entries(this.plugin.settings.taskStatuses || {}).find(([, marks]) => String(marks).split("|").includes(status))?.[0];
-		const group = configured || ({ x: "completed", X: "completed", "/": "inProgress", ">": "inProgress", "-": "abandoned", "?": "planned", " ": "notStarted", a: "archived" } as Record<string, string>)[status] || "archived";
+		const group = getTaskStatusGroup(status, this.plugin.settings) || "archived";
 		const appearance: Record<string, [string, string]> = { completed: ["check-circle", "completed"], inProgress: ["clock", "in-progress"], abandoned: ["x-circle", "abandoned"], planned: ["help-circle", "planned"], notStarted: ["circle", "not-started"], archived: ["pause", "paused"], paused: ["pause", "paused"], pause: ["pause", "paused"] };
 		const [icon, cls] = appearance[group] || appearance.archived;
 		setIcon(statusIcon, icon); statusContainer.addClass(cls);

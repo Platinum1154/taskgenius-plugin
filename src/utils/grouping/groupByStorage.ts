@@ -77,7 +77,7 @@ export function getAllGroupByConfigs(): Record<string, GroupByDimension> {
  * Get the expanded state for a specific group
  * @param viewId - View identifier
  * @param groupKey - Unique key for the group
- * @returns true if expanded, false if collapsed (default: false)
+ * @returns true if expanded, false if collapsed (default: true)
  */
 export function getGroupExpandedState(
 	viewId: string,
@@ -87,7 +87,7 @@ export function getGroupExpandedState(
 	const stored = localStorage.getItem(key);
 
 	if (stored === null) {
-		return false; // Default: collapsed
+		return true; // Default: expanded
 	}
 
 	return stored === "true";
